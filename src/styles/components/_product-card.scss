@@ -1,0 +1,171 @@
+.product-card {
+display: flex;
+flex-direction: column;
+
+min-width: 0;
+
+background-color: var(--color-surface);
+
+overflow: hidden;
+
+transition: transform 0.25s ease;
+
+&:hover {
+transform: translateY(-4px);
+}
+}
+
+.product-card__image {
+position: relative;
+
+aspect-ratio: 1 / 1;
+
+overflow: hidden;
+
+background-color: var(--color-bg);
+}
+
+.product-card__image img {
+width: 100%;
+height: 100%;
+
+object-fit: cover;
+
+transition: transform 0.4s ease;
+}
+
+.product-card__image-link {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-card__title-link {
+  color: inherit;
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.product-card:hover .product-card__image img {
+transform: scale(1.04);
+}
+
+.product-card__badge {
+position: absolute;
+top: var(--space-3);
+left: var(--space-3);
+
+padding: var(--space-1) var(--space-3);
+
+border-radius: var(--radius-sm);
+
+background-color: var(--color-surface);
+color: var(--color-text);
+
+font-size: 0.75rem;
+font-weight: 600;
+line-height: 1.2;
+text-transform: uppercase;
+letter-spacing: 0.04em;
+}
+
+.product-card__content {
+display: flex;
+flex: 1;
+flex-direction: column;
+
+padding-top: var(--space-4);
+}
+
+.product-card__category {
+margin-bottom: var(--space-2);
+
+color: var(--color-text-muted);
+
+font-size: 0.75rem;
+font-weight: 500;
+line-height: 1.4;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+}
+
+.product-card__title {
+margin: 0;
+
+color: var(--color-text);
+
+font-family: var(--font-main);
+font-size: 1rem;
+font-weight: 500;
+line-height: 1.4;
+}
+
+.product-card__bottom {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: var(--space-3);
+
+margin-top: var(--space-3);
+}
+
+.product-card__price {
+color: var(--color-text);
+
+font-size: 1rem;
+font-weight: 600;
+line-height: 1.4;
+}
+
+.product-card__action {
+flex-shrink: 0;
+}
+
+.product-card__favorite {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background-color: var(--color-surface);
+  color: var(--color-text);
+
+  font-size: 1.25rem;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    color: var(--color-accent);
+    transform: scale(1.05);
+  }
+
+  &.is-active {
+    color: var(--color-accent);
+  }
+}

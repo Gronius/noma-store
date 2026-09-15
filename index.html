@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <title>noma-store</title>
+  </head>
+  <body>
+    <!-- HEADER -->
+
+    <header class="site-header">
+      <div class="container">
+        <div class="site-header__inner">
+          <a class="site-header__logo" href="/"> NOMA </a>
+
+          <!-- Desktop Navigation -->
+          <nav class="site-header__nav" aria-label="Main navigation">
+            <ul class="site-header__nav-list">
+              <li>
+                <a class="site-header__nav-link" href="#shop"> Shop </a>
+              </li>
+
+              <li>
+                <a class="site-header__nav-link" href="#new"> New </a>
+              </li>
+
+              <li>
+                <a class="site-header__nav-link" href="#about"> About </a>
+              </li>
+            </ul>
+          </nav>
+
+          <div class="site-header__actions">
+            <button
+              class="site-header__action"
+              type="button"
+              aria-label="Search"
+            >
+              Search
+            </button>
+
+            <button
+              class="site-header__action"
+              type="button"
+              aria-label="Shopping cart"
+            >
+              Cart
+              <span data-cart-count>0</span>
+            </button>
+
+            <button
+              class="site-header__action site-header__menu"
+              type="button"
+              aria-label="Open menu"
+              aria-expanded="false"
+              aria-controls="mobile-menu"
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__overlay"></div>
+
+        <div
+          class="mobile-menu__panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation"
+        >
+          <div class="mobile-menu__header">
+            <a class="site-header__logo" href="/"> NOMA </a>
+
+            <button
+              class="mobile-menu__close"
+              type="button"
+              aria-label="Close menu"
+            >
+              Close
+            </button>
+          </div>
+
+          <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+            <ul class="mobile-menu__list">
+              <li>
+                <a class="mobile-menu__link" href="#shop"> Shop </a>
+              </li>
+
+              <li>
+                <a class="mobile-menu__link" href="#new"> New </a>
+              </li>
+
+              <li>
+                <a class="mobile-menu__link" href="#about"> About </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+      <!-- HERO Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero__grid">
+            <div class="hero__content">
+              <p class="hero__eyebrow">NOMA HOME COLLECTION</p>
+
+              <h1 class="hero__title">
+                Objects for<br />
+                everyday living.
+              </h1>
+
+              <p class="hero__text">
+                Thoughtfully selected pieces for a calm, functional and
+                considered home.
+              </p>
+
+              <a class="btn btn--primary" href="#shop"> Explore collection </a>
+            </div>
+
+            <div class="hero__media">
+              <img
+                src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85"
+                alt="Minimal interior with warm natural tones"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORIES Section -->
+      <section class="section categories" id="shop">
+        <div class="container">
+          <div class="categories__header">
+            <p class="categories__eyebrow">Explore NOMA</p>
+
+            <h2 class="categories__title">Shop by category</h2>
+          </div>
+
+          <div class="categories__grid">
+            <!-- Lighting -->
+            <a class="category-card" href="#lighting">
+              <div class="category-card__media">
+                <img
+                  src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=80"
+                  alt="Modern lighting"
+                />
+              </div>
+
+              <div class="category-card__content">
+                <h3 class="category-card__title">Lighting</h3>
+
+                <span class="category-card__link"> Explore </span>
+              </div>
+            </a>
+
+            <!-- Furniture -->
+            <a class="category-card" href="#furniture">
+              <div class="category-card__media">
+                <img
+                  src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=900&q=80"
+                  alt="Minimal furniture"
+                />
+              </div>
+
+              <div class="category-card__content">
+                <h3 class="category-card__title">Furniture</h3>
+
+                <span class="category-card__link"> Explore </span>
+              </div>
+            </a>
+
+            <!-- Decor -->
+            <a class="category-card" href="#decor">
+              <div class="category-card__media">
+                <img
+                  src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=80"
+                  alt="Minimal home decor"
+                />
+              </div>
+
+              <div class="category-card__content">
+                <h3 class="category-card__title">Decor</h3>
+
+                <span class="category-card__link"> Explore </span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES CATEGORIES Section -->
+
+      <section class="section featured-products" id="new">
+        <div class="container">
+          <div class="featured-products__header">
+            <div>
+              <p class="featured-products__eyebrow">Selected for you</p>
+
+              <h2 class="featured-products__title">Featured products</h2>
+            </div>
+
+            <a class="featured-products__link" href="#products"> View all </a>
+          </div>
+
+          <div class="product-grid" id="featured-products"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div class="product-modal" id="product-modal" aria-hidden="true">
+      <div class="product-modal__overlay"></div>
+
+      <div
+        class="product-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-modal-title"
+      >
+        <button
+          class="product-modal__close"
+          type="button"
+          aria-label="Close product details"
+        >
+          Close
+        </button>
+
+        <div class="product-modal__content">
+          <!-- Product data will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Drawer: -->
+     <div
+  class="cart"
+  id="cart"
+  aria-hidden="true"
+>
+  <div class="cart__overlay"></div>
+
+  <aside
+    class="cart__drawer"
+    aria-label="Shopping cart"
+  >
+    <div class="cart__header">
+      <h2 class="cart__title">
+        Your cart
+      </h2>
+
+      <button
+        class="cart__close"
+        type="button"
+        aria-label="Close shopping cart"
+      >
+        Close
+      </button>
+    </div>
+
+    <div
+      class="cart__items"
+      data-cart-items
+    >
+      <!-- Cart items will be rendered here -->
+    </div>
+
+    <div class="cart__footer">
+      <div class="cart__total">
+        <span>Total</span>
+
+        <strong data-cart-total>
+          €0.00
+        </strong>
+      </div>
+
+      <button
+        class="btn btn--primary cart__checkout"
+        type="button"
+      >
+        Checkout
+      </button>
+    </div>
+  </aside>
+</div>
+
+
+
+    <script type="module" src="/src/js/main.js"></script>
+  </body>
+</html>

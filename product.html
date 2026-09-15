@@ -1,0 +1,290 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+
+<link
+  rel="icon"
+  type="image/svg+xml"
+  href="/favicon.svg"
+/>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<title>Product — NOMA</title>
+
+  </head>
+
+  <body>
+
+<!-- HEADER -->
+
+<header class="site-header">
+  <div class="container">
+    <div class="site-header__inner">
+
+      <a
+        class="site-header__logo"
+        href="/"
+      >
+        NOMA
+      </a>
+
+      <!-- Desktop Navigation -->
+
+      <nav
+        class="site-header__nav"
+        aria-label="Main navigation"
+      >
+        <ul class="site-header__nav-list">
+
+          <li>
+            <a
+              class="site-header__nav-link"
+              href="/products.html"
+            >
+              Shop
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="site-header__nav-link"
+              href="/products.html"
+            >
+              New
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="site-header__nav-link"
+              href="/#about"
+            >
+              About
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <!-- Header Actions -->
+
+      <div class="site-header__actions">
+
+        <button
+          class="site-header__action"
+          type="button"
+          aria-label="Search"
+        >
+          Search
+        </button>
+
+        <button
+          class="site-header__action"
+          type="button"
+          aria-label="Shopping cart"
+        >
+          Cart
+          <span data-cart-count>0</span>
+        </button>
+
+        <button
+          class="site-header__action site-header__menu"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          Menu
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+
+  <div
+    class="mobile-menu"
+    id="mobile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="mobile-menu__overlay"></div>
+
+    <div
+      class="mobile-menu__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+    >
+
+      <div class="mobile-menu__header">
+
+        <a
+          class="site-header__logo"
+          href="/"
+        >
+          NOMA
+        </a>
+
+        <button
+          class="mobile-menu__close"
+          type="button"
+          aria-label="Close menu"
+        >
+          Close
+        </button>
+
+      </div>
+
+      <nav
+        class="mobile-menu__nav"
+        aria-label="Mobile navigation"
+      >
+
+        <ul class="mobile-menu__list">
+
+          <li>
+            <a
+              class="mobile-menu__link"
+              href="/products.html"
+            >
+              Shop
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="mobile-menu__link"
+              href="/products.html"
+            >
+              New
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="mobile-menu__link"
+              href="/#about"
+            >
+              About
+            </a>
+          </li>
+
+        </ul>
+
+      </nav>
+
+    </div>
+
+  </div>
+
+</header>
+
+<!-- MAIN -->
+
+<main>
+
+  <section class="section product-page">
+
+    <div class="container">
+
+      <a
+        class="product-page__back"
+        href="/products.html"
+      >
+        ← Back to products
+      </a>
+
+      <div
+        class="product-page__content"
+        data-product-page
+      >
+        <!-- Product will be rendered here -->
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<!-- CART -->
+
+<div
+  class="cart"
+  id="cart"
+  aria-hidden="true"
+>
+
+  <div class="cart__overlay"></div>
+
+  <aside
+    class="cart__drawer"
+    aria-label="Shopping cart"
+  >
+
+    <div class="cart__header">
+
+      <h2 class="cart__title">
+        Your cart
+      </h2>
+
+      <button
+        class="cart__close"
+        type="button"
+        aria-label="Close shopping cart"
+      >
+        Close
+      </button>
+
+    </div>
+
+    <div
+      class="cart__items"
+      data-cart-items
+    >
+      <!-- Cart items -->
+    </div>
+
+    <div class="cart__footer">
+
+      <div class="cart__total">
+
+        <span>Total</span>
+
+        <strong data-cart-total>
+          €0.00
+        </strong>
+
+      </div>
+
+      <button
+        class="btn btn--primary cart__checkout"
+        type="button"
+      >
+        Checkout
+      </button>
+
+    </div>
+
+  </aside>
+
+</div>
+
+<script
+  type="module"
+  src="/src/js/pages/product.js"
+></script>
+
+
+  </body>
+</html>

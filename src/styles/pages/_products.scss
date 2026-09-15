@@ -1,0 +1,103 @@
+@use "../abstracts" as *;
+
+.products-page {
+  &__header {
+    max-width: 720px;
+    margin-inline: auto;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  &__eyebrow {
+    margin-bottom: 12px;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    color: var(--color-text-muted);
+  }
+
+  &__title {
+    margin-bottom: 16px;
+
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+  }
+
+  &__description {
+    max-width: 580px;
+    margin-inline: auto;
+
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  &__filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-bottom: 48px;
+  }
+
+  &__filter {
+    padding: 10px 18px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+
+    background-color: transparent;
+    color: var(--color-text);
+
+    font: inherit;
+    cursor: pointer;
+
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+
+    &:hover,
+    &.is-active {
+      background-color: var(--color-text);
+      border-color: var(--color-text);
+      color: var(--color-bg);
+    }
+  }
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+
+  @include lg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include sm {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.products-load-more {
+  margin-top: 48px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.products-load-more__count {
+  margin: 0;
+
+  font-size: 14px;
+  color: var(--color-text-muted);
+}

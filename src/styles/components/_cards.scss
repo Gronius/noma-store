@@ -1,0 +1,12 @@
+.card {
+border: 1px solid var(--color-border);
+border-radius: var(--radius-lg);
+
+background-color: var(--color-surface);
+
+overflow: hidden;
+}
+
+.card__body {
+padding: var(--space-5);
+}

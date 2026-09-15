@@ -1,0 +1,7 @@
+.section {
+  padding-block: clamp(64px, 8vw, 120px);
+}
+
+.section--sm {
+  padding-block: clamp(40px, 5vw, 64px);
+}

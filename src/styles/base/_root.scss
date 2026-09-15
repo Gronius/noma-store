@@ -1,0 +1,42 @@
+:root {
+  // Fonts
+--font-heading: "DM Serif Display", serif;
+--font-main: "Inter", sans-serif;
+
+// Colors
+--color-bg: #f6f4ef;
+--color-surface: #ffffff;
+
+--color-text: #1c1c1a;
+--color-text-muted: #706e68;
+
+--color-border: #e5e2da;
+
+--color-accent: #b56e52;
+--color-accent-dark: #92533b;
+
+--color-success: #4f7a61;
+--color-warning: #b8873c;
+--color-error: #b54b4b;
+
+// Layout
+--container-width: 1280px;
+
+// Border radius
+--radius-sm: 6px;
+--radius-md: 8px;
+--radius-lg: 12px;
+--radius-xl: 16px;
+
+// Spacing
+--space-1: 4px;
+--space-2: 8px;
+--space-3: 12px;
+--space-4: 16px;
+--space-5: 24px;
+--space-6: 32px;
+--space-7: 48px;
+--space-8: 64px;
+--space-9: 80px;
+--space-10: 120px;
+}

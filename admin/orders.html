@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>NOMA Admin — Orders</title>
+  </head>
+
+  <body>
+    <div class="admin-layout">
+      <main class="admin-layout__main">
+
+        <header class="admin-layout__header">
+          <a
+            class="admin-layout__brand"
+            href="/admin/"
+          >
+            NOMA ADMIN
+          </a>
+
+          <div class="admin-orders__nav">
+            <a
+              class="admin-layout__back"
+              href="/admin/products.html"
+            >
+              Products
+            </a>
+
+            <a
+              class="admin-layout__back"
+              href="/admin/"
+            >
+              Dashboard
+            </a>
+          </div>
+        </header>
+
+
+        <section class="admin-orders">
+
+          <header class="admin-orders__header">
+
+            <div>
+              <p class="admin-orders__eyebrow">
+                STORE MANAGEMENT
+              </p>
+
+              <h1 class="admin-orders__title">
+                Orders
+              </h1>
+
+              <p class="admin-orders__description">
+                View and manage customer orders.
+              </p>
+            </div>
+
+
+            <div
+              class="admin-orders__count"
+              data-orders-count
+            >
+              0 orders
+            </div>
+
+          </header>
+
+          <div class="admin-orders__filters">
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="orders-search"
+              >
+                Search orders
+              </label>
+
+              <input
+                class="form-input"
+                type="search"
+                id="orders-search"
+                placeholder="Order number or customer"
+                data-orders-search
+              />
+            </div>
+
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="orders-status"
+              >
+                Status
+              </label>
+
+              <select
+                class="form-input"
+                id="orders-status"
+                data-orders-status
+              >
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+
+        <div class="admin-orders__table-wrapper">
+
+  
+
+          <table class="admin-orders__table">
+
+            <thead>
+              <tr>
+                <th scope="col">Order</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Date</th>
+                <th scope="col">Items</th>
+                <th scope="col">Total</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody data-orders-table>
+              <!-- Orders rendered with JavaScript -->
+            </tbody>
+
+          </table>
+
+        </div>
+
+        </section>
+
+      </main>
+
+      <!-- Order Details Modal -->
+
+<div
+  class="admin-order-modal"
+  data-order-modal
+  aria-hidden="true"
+>
+  <div
+    class="admin-order-modal__overlay"
+    data-order-modal-close
+  ></div>
+
+  <section
+    class="admin-order-modal__dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="admin-order-modal-title"
+  >
+
+    <header class="admin-order-modal__header">
+
+      <div>
+        <p class="admin-order-modal__eyebrow">
+          ORDER DETAILS
+        </p>
+
+        <h2
+          class="admin-order-modal__title"
+          id="admin-order-modal-title"
+          data-order-modal-title
+        >
+          Order
+        </h2>
+      </div>
+
+      <button
+        class="btn btn--ghost"
+        type="button"
+        data-order-modal-close
+        aria-label="Close order details"
+      >
+        Close
+      </button>
+
+    </header>
+
+
+    <div
+      class="admin-order-modal__content"
+      data-order-modal-content
+    ></div>
+
+  </section>
+</div>
+
+
+    </div>
+
+    <script type="module" src="/src/js/admin/orders.js"
+    ></script>
+  </body>
+</html>
