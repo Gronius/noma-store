@@ -28,6 +28,31 @@ const ordersStatusFilter =  //added
     "[data-orders-status]"
   );
 
+const summaryTotal =
+  document.querySelector(
+    "[data-summary-total]"
+  );
+
+const summaryPending =
+  document.querySelector(
+    "[data-summary-pending]"
+  );
+
+const summaryProcessing =
+  document.querySelector(
+    "[data-summary-processing]"
+  );
+
+const summaryCompleted =
+  document.querySelector(
+    "[data-summary-completed]"
+  );
+
+const summaryCancelled =
+  document.querySelector(
+    "[data-summary-cancelled]"
+  );
+
 
 
 const orderModal =
@@ -321,8 +346,58 @@ ordersStatusFilter?.addEventListener(
 //       .join("");
 // }
 
+// ---- ORDER SUmmary
+function renderOrdersSummary() {
+  const orders = getAllOrders();
+
+  const counts = {
+    pending: 0,
+    processing: 0,
+    completed: 0,
+    cancelled: 0,
+  };
+
+  orders.forEach((order) => {
+    if (
+      Object.hasOwn(
+        counts,
+        order.status
+      )
+    ) {
+      counts[order.status] += 1;
+    }
+  });
+
+  if (summaryTotal) {
+    summaryTotal.textContent =
+      orders.length;
+  }
+
+  if (summaryPending) {
+    summaryPending.textContent =
+      counts.pending;
+  }
+
+  if (summaryProcessing) {
+    summaryProcessing.textContent =
+      counts.processing;
+  }
+
+  if (summaryCompleted) {
+    summaryCompleted.textContent =
+      counts.completed;
+  }
+
+  if (summaryCancelled) {
+    summaryCancelled.textContent =
+      counts.cancelled;
+  }
+}
+
 // --RENDER ORDDER new
 function renderOrders() {
+  renderOrdersSummary();
+
   if (!ordersTable) {
     return;
   }
