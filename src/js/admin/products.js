@@ -11,7 +11,6 @@ import {
   deleteProduct,
 } from "../modules/products.js";
 
-
 const productsTable = document.querySelector(
     "[data-products-table]"
   );
@@ -40,6 +39,18 @@ const cancelButtons = document.querySelectorAll(
     "[data-cancel-product]"
   );
 
+const productsSearchInput = document.querySelector(
+  "[data-products-search]"
+);
+
+const productsCategoryFilter = document.querySelector(
+  "[data-products-category]"
+);
+
+const productsCountElement = document.querySelector(
+  "[data-products-count]"
+);
+
 const imageInput = productForm?.querySelector(
   "[data-product-image-url]"
 );
@@ -56,9 +67,9 @@ const imagePreviewImg = productForm?.querySelector(
   "[data-product-image-preview-img]"
 );
 
-
 let editingProductId = null;
-
+let searchQuery = "";
+let selectedCategory = "all";
 
 /* ------------------------------
    Helpers
@@ -68,14 +79,34 @@ function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
 
-
 function getProducts() {
   return getAllProducts(
     initialProducts
   );
 }
+/* ------------------------------
+   Filter Products
+------------------------------ */
+  function filterProducts(products) {
+  const query = searchQuery.trim().toLowerCase();
 
+  return products.filter((product) => {
+    const matchesSearch =
+      !query ||
+      product.title
+        ?.toLowerCase()
+        .includes(query);
 
+    const matchesCategory =
+      selectedCategory === "all" ||
+      product.category === selectedCategory;
+
+    return (
+      matchesSearch &&
+      matchesCategory
+    );
+  });
+}
 /* ------------------------------
    Render Products
 ------------------------------ */
@@ -87,8 +118,35 @@ function renderProducts() {
 
   const products = getProducts();
 
+  const filteredProducts =
+    filterProducts(products);
+
+  if (productsCountElement) {
+    productsCountElement.textContent =
+      `${filteredProducts.length} ${
+        filteredProducts.length === 1
+          ? "product"
+          : "products"
+      }`;
+  }
+
+  if (filteredProducts.length === 0) {
+    productsTable.innerHTML = `
+      <tr>
+        <td
+          class="admin-products__empty"
+          colspan="5"
+        >
+          No products found.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
   productsTable.innerHTML =
-    products
+    filteredProducts
       .map(
         (product) => `
           <tr
@@ -211,7 +269,6 @@ function renderProducts() {
       .join("");
 }
 
-
 /* ------------------------------
    Form State
 ------------------------------ */
@@ -235,7 +292,6 @@ function setAddMode() {
   );
    hideImagePreview();
 }
-
 
 function setEditMode(product) {
   editingProductId = product.id;
@@ -340,7 +396,6 @@ function setEditMode(product) {
   }
 }
 
-
 /* ------------------------------
    Show / Hide Form
 ------------------------------ */
@@ -360,7 +415,6 @@ function showProductForm() {
   )?.focus();
 }
 
-
 function hideProductForm() {
   formWrapper?.setAttribute(
     "hidden",
@@ -373,7 +427,6 @@ function hideProductForm() {
 
   setAddMode();
 }
-
 
 /* ------------------------------
    Validation
@@ -407,7 +460,6 @@ function showFieldError(
   error.hidden = false;
 }
 
-
 function clearFieldError(fieldName) {
   const field =
     productForm?.querySelector(
@@ -433,7 +485,6 @@ function clearFieldError(fieldName) {
   error.hidden = true;
 }
 
-
 function clearErrors() {
   [
     "title",
@@ -444,7 +495,6 @@ function clearErrors() {
     "description",
   ].forEach(clearFieldError);
 }
-
 
 function validateProductForm(
   formData
@@ -473,7 +523,6 @@ function validateProductForm(
       .get("description")
       ?.trim();
 
-
   if (!title) {
     showFieldError(
       "title",
@@ -483,7 +532,6 @@ function validateProductForm(
     isValid = false;
   }
 
-
   if (!category) {
     showFieldError(
       "category",
@@ -492,7 +540,6 @@ function validateProductForm(
 
     isValid = false;
   }
-
 
   if (
     !Number.isFinite(price) ||
@@ -505,7 +552,6 @@ function validateProductForm(
 
     isValid = false;
   }
-
 
   if (
   image &&
@@ -523,7 +569,6 @@ function validateProductForm(
     isValid = false;
   }
 
-
   if (!alt) {
     showFieldError(
       "alt",
@@ -532,7 +577,6 @@ function validateProductForm(
 
     isValid = false;
   }
-
 
   if (!description) {
     showFieldError(
@@ -543,10 +587,8 @@ function validateProductForm(
     isValid = false;
   }
 
-
   return isValid;
 }
-
 
 /* ------------------------------
    Create / Update
@@ -585,7 +627,6 @@ function getProductData(
       formData.get("featured") === "on",
   };
 }
-
 
 function handleSubmit(event) {
   event.preventDefault();
@@ -730,6 +771,30 @@ function handleDelete(productId) {
   renderProducts();
 }
 /* ------------------------------
+   Products Search Input
+------------------------------ */
+productsSearchInput?.addEventListener(
+  "input",
+  () => {
+    searchQuery =
+      productsSearchInput.value;
+
+    renderProducts();
+  }
+);
+/* ------------------------------
+   Подія Category
+------------------------------ */
+  productsCategoryFilter?.addEventListener(
+  "change",
+  () => {
+    selectedCategory =
+      productsCategoryFilter.value;
+
+    renderProducts();
+  }
+);
+/* ------------------------------
    Events
 ------------------------------ */
 
@@ -751,7 +816,6 @@ cancelButtons.forEach(
     );
   }
 );
-
 
 productForm?.addEventListener(
   "submit",
@@ -787,7 +851,6 @@ productsTable?.addEventListener(
     }
   }
 );
-
 
 /* ------------------------------
    Initial Render

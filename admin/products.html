@@ -3,11 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>NOMA Admin — Products</title>
   </head>
 
@@ -16,7 +13,6 @@
       <main class="admin-layout__main">
         <header class="admin-layout__header">
           <a class="admin-layout__brand" href="/admin/"> NOMA ADMIN </a>
-
           <a class="admin-layout__back" href="/admin/"> Dashboard </a>
         </header>
 
@@ -37,14 +33,11 @@
             </button>
           </header>
 
-          <div
-            class="admin-products__form-wrapper"
-            data-product-form-wrapper
-            hidden
+          <div class="admin-products__form-wrapper"
+            data-product-form-wrapper  hidden
           >
-            <!-- <form class="admin-product-form" id="admin-product-form" novalidate> -->
-            <form
-              class="admin-product-form"
+
+            <form class="admin-product-form"
               id="admin-product-form"
               data-product-form-mode="add"
               novalidate
@@ -52,19 +45,14 @@
               <div class="admin-product-form__header">
                 <div>
                   <p class="admin-product-form__eyebrow">PRODUCT MANAGEMENT</p>
-
-                  <!-- <h2 class="admin-product-form__title">Add Product</h2> -->
                   <h2 class="admin-product-form__title" data-product-form-title>
                     Add Product
                   </h2>
                 </div>
 
-                <button
-                  class="btn btn--ghost"
-                  type="button"
-                  data-cancel-product
-                >
-                  Cancel
+                <button class="btn btn--ghost"
+                  type="button" data-cancel-product
+                  >Cancel
                 </button>
               </div>
 
@@ -74,14 +62,10 @@
                     Product Title
                   </label>
 
-                  <input
-                    class="form-input"
-                    type="text"
-                    id="product-title"
-                    name="title"
-                    required
+                  <input class="form-input"
+                    type="text" id="product-title"
+                    name="title" required
                   />
-
                   <span class="form-error" data-error-for="title" hidden></span>
                 </div>
 
@@ -96,16 +80,12 @@
                       required
                     >
                       <option value="">Choose category</option>
-
                       <option value="Furniture">Furniture</option>
-
                       <option value="Lighting">Lighting</option>
-
                       <option value="Decor">Decor</option>
                     </select>
 
-                    <span class="form-error"
-                      data-error-for="category"
+                    <span class="form-error" data-error-for="category"
                       hidden
                     ></span>
                   </div>
@@ -115,8 +95,7 @@
                       Price
                     </label>
 
-                    <input class="form-input"
-                      type="number"
+                    <input class="form-input" type="number"
                       id="product-price"
                       name="price"
                       min="0"
@@ -164,8 +143,7 @@
                     Image Alt Text
                   </label>
 
-                  <input
-                    class="form-input"
+                  <input class="form-input"
                     type="text"
                     id="product-alt"
                     name="alt"
@@ -181,15 +159,13 @@
                     Description
                   </label>
 
-                  <textarea
-                    class="form-textarea"
+                  <textarea class="form-textarea"
                     id="product-description"
                     name="description"
                     required
                   ></textarea>
 
-                  <span
-                    class="form-error"
+                  <span class="form-error"
                     data-error-for="description"
                     hidden
                   ></span>
@@ -215,27 +191,74 @@
               </div>
 
               <div class="admin-product-form__actions">
-                <!-- <button class="btn btn--primary" type="submit">
-                  Save Product
-                </button> -->
-                <button
-                  class="btn btn--primary"
+                <button class="btn btn--primary"
                   type="submit"
                   data-product-submit
-                >
-                  Save Product
+                >Save Product
                 </button>
 
-                <button
-                  class="btn btn--secondary"
-                  type="button"
-                  data-cancel-product
-                >
-                  Cancel
+                <button class="btn btn--secondary"
+                  type="button" data-cancel-product
+                >Cancel
                 </button>
               </div>
             </form>
           </div>
+
+          <!-- панель Products v3: -->
+          <div class="admin-products__toolbar">
+
+            <div class="form-field admin-products__search">
+              <label  class="form-label"
+                for="products-search"
+              >
+                Search products
+              </label>
+
+              <input class="form-input"
+                type="search"
+                id="products-search"
+                placeholder="Search by product title..."
+                data-products-search
+              />
+            </div>
+
+            <div class="form-field admin-products__category">
+              <label class="form-label"
+                for="products-category"
+              >
+                Category
+              </label>
+
+              <select  class="form-select"
+                id="products-category"
+                data-products-category
+              >
+                <option value="all">
+                  All categories
+                </option>
+
+                <option value="Furniture">
+                  Furniture
+                </option>
+
+                <option value="Lighting">
+                  Lighting
+                </option>
+
+                <option value="Decor">
+                  Decor
+                </option>
+              </select>
+            </div>
+
+          </div>
+
+          <p   class="admin-products__count"
+            data-products-count
+          >   0 products
+          </p>
+
 
           <div class="admin-products__table-wrapper">
             <table class="admin-products__table">
