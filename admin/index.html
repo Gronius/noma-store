@@ -23,7 +23,6 @@
 
   <body>
 
-
 <div class="admin-layout">
 
   <main class="admin-layout__main">
@@ -46,7 +45,6 @@
 
     </header>
 
-
     <section class="dashboard">
 
       <header class="dashboard__header">
@@ -65,7 +63,6 @@
         </p>
 
       </header>
-
 
       <div
         class="dashboard__stats"
@@ -87,7 +84,6 @@
 
         </article>
 
-
         <article class="dashboard-stat">
 
           <span class="dashboard-stat__label">
@@ -103,7 +99,6 @@
 
         </article>
 
-
         <article class="dashboard-stat">
 
           <span class="dashboard-stat__label">
@@ -118,7 +113,6 @@
           </strong>
 
         </article>
-
 
         <article class="dashboard-stat">
 
@@ -137,10 +131,39 @@
 
       </div>
 
-
       <section class="dashboard__recent">
 
         <header class="dashboard__recent-header">
+  <h2 class="dashboard__recent-title">
+    Recent Orders
+  </h2>
+
+  <a
+    class="btn btn--ghost"
+    href="/admin/orders.html"
+  >
+    View all
+  </a>
+</header>
+
+<div class="dashboard__orders">
+
+  <div class="dashboard-order dashboard-order--head">
+    <span>Order</span>
+    <span>Customer</span>
+    <span>Date</span>
+    <span>Total</span>
+    <span>Status</span>
+  </div>
+
+  <div
+    class="dashboard__orders-list"
+    data-recent-orders
+  ></div>
+
+</div>
+
+        <!-- <header class="dashboard__recent-header">
 
           <h2 class="dashboard__recent-title">
             Recent Orders
@@ -155,11 +178,10 @@
 
         </header>
 
-
         <div
           class="dashboard__orders"
           data-recent-orders
-        ></div>
+        ></div> -->
 
       </section>
 
@@ -169,12 +191,9 @@
 
 </div>
 
-
-<script
-  type="module"
+<script  type="module"
   src="/src/js/admin/dashboard.js"
 ></script>
-
 
   </body>
 </html>

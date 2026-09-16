@@ -12,7 +12,6 @@ import {
   getAllOrders,
 } from "../modules/orders.js";
 
-
 const productCountElement =
   document.querySelector(
     '[data-stat="products"]'
@@ -38,18 +37,15 @@ const recentOrdersContainer =
     "[data-recent-orders]"
   );
 
-
 const products =
   getAllProducts(initialProducts);
 
 const orders =
   getAllOrders();
 
-
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
-
 
 function formatDate(date) {
   return new Intl.DateTimeFormat(
@@ -61,7 +57,14 @@ function formatDate(date) {
     }
   ).format(new Date(date));
 }
-
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 function calculateRevenue(orders) {
   return orders.reduce(
@@ -70,7 +73,6 @@ function calculateRevenue(orders) {
     0
   );
 }
-
 
 function renderStats() {
   const totalProducts =
@@ -126,7 +128,6 @@ function renderRecentOrders() {
     return;
   }
 
-
   const recentOrders =
     [...orders]
       .sort(
@@ -136,7 +137,6 @@ function renderRecentOrders() {
       )
       .slice(0, 5);
 
-
   recentOrdersContainer.innerHTML =
     recentOrders
       .map(
@@ -144,11 +144,14 @@ function renderRecentOrders() {
           <article class="dashboard-order">
 
             <span class="dashboard-order__id">
-              ${order.id}
+              ${escapeHtml(order.id)}
             </span>
 
             <span class="dashboard-order__customer">
-              ${order.customer.name}
+              ${escapeHtml(
+                order.customer?.name ??
+                "Unknown customer"
+              )}
             </span>
 
             <span class="dashboard-order__date">
@@ -162,10 +165,12 @@ function renderRecentOrders() {
             <span
               class="
                 dashboard-order__status
-                dashboard-order__status--${order.status}
+                dashboard-order__status--${escapeHtml(
+                  order.status
+                )}
               "
             >
-              ${order.status}
+              ${escapeHtml(order.status)}
             </span>
 
           </article>
@@ -173,6 +178,24 @@ function renderRecentOrders() {
       )
       .join("");
 }
+
+/* ------------------------------
+   Initial Dashboard
+------------------------------ */
+
+renderStats();
+renderRecentOrders();
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Initial Dashboard */
