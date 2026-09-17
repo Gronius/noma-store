@@ -2,7 +2,7 @@ import "../../styles/main.scss";
 
 import {products as initialProducts,} from "../../data/products.js";
 
-import { getAllProducts,} from "../modules/products.js";
+import { getAllProducts,} from "../api/products-api.js";
 
 import { initHeader } from "../components/header.js";
 
