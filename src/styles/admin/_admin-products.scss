@@ -31,11 +31,14 @@ color: var(--color-text-muted);
 
 .admin-products__toolbar {
   display: grid;
+
   grid-template-columns:
     minmax(240px, 2fr)
+    minmax(180px, 1fr)
     minmax(180px, 1fr);
 
   gap: var(--space-4);
+
   margin-bottom: var(--space-3);
 }
 .admin-products__count {

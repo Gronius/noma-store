@@ -47,6 +47,10 @@ const productsCategoryFilter = document.querySelector(
   "[data-products-category]"
 );
 
+const productsSortSelect = document.querySelector(
+  "[data-products-sort]"
+);
+
 const productsCountElement = document.querySelector(
   "[data-products-count]"
 );
@@ -68,8 +72,10 @@ const imagePreviewImg = productForm?.querySelector(
 );
 
 let editingProductId = null;
+
 let searchQuery = "";
 let selectedCategory = "all";
+let selectedSort = "newest";
 
 /* ------------------------------
    Helpers
@@ -108,6 +114,53 @@ function getProducts() {
   });
 }
 /* ------------------------------
+  SORT Products
+------------------------------ */
+function sortProducts(products) {
+  const sortedProducts = [...products];
+
+  switch (selectedSort) {
+    case "name":
+      return sortedProducts.sort((a, b) =>
+        a.title.localeCompare(
+          b.title,
+          undefined,
+          { sensitivity: "base" }
+        )
+      );
+
+    case "price-asc":
+      return sortedProducts.sort(
+        (a, b) =>
+          Number(a.price) - Number(b.price)
+      );
+
+    case "price-desc":
+      return sortedProducts.sort(
+        (a, b) =>
+          Number(b.price) - Number(a.price)
+      );
+
+    case "category":
+      return sortedProducts.sort((a, b) =>
+        a.category.localeCompare(
+          b.category,
+          undefined,
+          { sensitivity: "base" }
+        )
+      );
+
+    case "newest":
+    default:
+      return sortedProducts.sort(
+        (a, b) =>
+          Number(b.id) - Number(a.id)
+      );
+  }
+}
+
+
+/* ------------------------------
    Render Products
 ------------------------------ */
 
@@ -116,10 +169,13 @@ function renderProducts() {
     return;
   }
 
-  const products = getProducts();
+const products = getProducts();
 
-  const filteredProducts =
-    filterProducts(products);
+const filteredProducts =
+  filterProducts(products);
+
+const sortedProducts =
+  sortProducts(filteredProducts);
 
   if (productsCountElement) {
     productsCountElement.textContent =
@@ -130,7 +186,7 @@ function renderProducts() {
       }`;
   }
 
-  if (filteredProducts.length === 0) {
+  if (sortedProducts.length === 0){
     productsTable.innerHTML = `
       <tr>
         <td
@@ -146,7 +202,7 @@ function renderProducts() {
   }
 
   productsTable.innerHTML =
-    filteredProducts
+     sortedProducts
       .map(
         (product) => `
           <tr
@@ -790,6 +846,16 @@ productsSearchInput?.addEventListener(
   () => {
     selectedCategory =
       productsCategoryFilter.value;
+
+    renderProducts();
+  }
+);
+
+productsSortSelect?.addEventListener(
+  "change",
+  () => {
+    selectedSort =
+      productsSortSelect.value;
 
     renderProducts();
   }
