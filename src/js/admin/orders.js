@@ -5,7 +5,7 @@ import {
   updateOrderStatus,
   deleteOrder,
   ORDER_STATUSES,
-} from "../modules/orders.js";
+} from "../api/orders-api.js";
 
 
 const ordersTable =

@@ -9,7 +9,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../modules/products.js";
+} from "../api/products-api.js";
 
 const productsTable = document.querySelector(
     "[data-products-table]"
