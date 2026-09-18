@@ -29,7 +29,6 @@ function normalizeProductImagePath(image) {
   return value;
 }
 
-
 function getProductsFromStorage() {
   try {
     const data = localStorage.getItem(
@@ -54,7 +53,6 @@ function getProductsFromStorage() {
    }
 }
 
-
 function saveProductsToStorage(products) {
   try {
     const normalizedProducts =
@@ -77,13 +75,11 @@ function saveProductsToStorage(products) {
   }
 }
 
-
 export function initializeProducts(
   initialProducts
 ) {
   const storedProducts =
     getProductsFromStorage();
-
 
   if (storedProducts !== null) {
     return [...storedProducts];
@@ -92,12 +88,9 @@ export function initializeProducts(
   const products = [
     ...initialProducts
   ];
-
-  // saveProductsToStorage(products);
-
+  saveProductsToStorage(products);
   return products;
 }
-
 
 export function getAllProducts(
   initialProducts
@@ -106,7 +99,6 @@ export function getAllProducts(
     initialProducts
   );
 }
-
 
 export function getProductById(
   productId,
@@ -120,7 +112,6 @@ export function getProductById(
       product.id === Number(productId)
   );
 }
-
 
 export function createProduct(
   productData
@@ -148,7 +139,6 @@ export function createProduct(
 
   return { ...product };
 }
-
 
 export function updateProduct(
   productId,
@@ -180,7 +170,6 @@ export function updateProduct(
 
   return { ...updatedProduct };
 }
-
 
 export function deleteProduct(
   productId
