@@ -6,7 +6,7 @@ import {
 
 import {
   getAllProducts,
-} from "../modules/products.js";
+} from "../api/products-api.js";
 
 import {
   getFavoritesFromStorage,
