@@ -5,7 +5,7 @@ import {  products as initialProducts,} from "../../data/products.js";
 import {
   getAllProducts,
   getProductById,
-} from "../modules/products.js";
+}from "../api/products-api.js";
 
 import { initHeader } from "../components/header.js";
 
