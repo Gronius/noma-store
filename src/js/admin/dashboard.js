@@ -10,7 +10,7 @@ import {
 
 import {
   getAllOrders,
-} from "../modules/orders.js";
+} from "../api/orders-api.js";
 
 const productCountElement =
   document.querySelector(

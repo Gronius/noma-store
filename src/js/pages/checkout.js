@@ -16,7 +16,7 @@ saveCartToStorage,
 import { initHeader } from "../components/header.js";
 import { initCart } from "../components/cart.js";
 
-import { createOrder } from "../modules/orders.js";
+import { createOrder } from "../api/orders-api.js";
 
 const checkoutPage = document.querySelector(
 "[data-checkout]"
