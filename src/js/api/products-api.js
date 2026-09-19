@@ -4,7 +4,7 @@ import {
   createProduct as createProductStorage,
   updateProduct as updateProductStorage,
   deleteProduct as deleteProductStorage,
-} from "../modules/products.js";
+} from "./products-storage.js";
 
 
 export function getAllProducts(initialProducts) {
