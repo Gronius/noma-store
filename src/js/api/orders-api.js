@@ -5,7 +5,7 @@ import {
   updateOrderStatus as updateOrderStatusStorage,
   deleteOrder as deleteOrderStorage,
   ORDER_STATUSES,
-} from "../modules/orders.js";
+} from "./orders-storage.js";
 
 
 export function getAllOrders() {
