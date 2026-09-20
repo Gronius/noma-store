@@ -44,4 +44,4 @@ export function saveFavoritesToStorage(favorites) {
   setStorage(FAVORITES_STORAGE_KEY, favorites);
 }
 
-// localStorage.setItem("noma-favorites", JSON.stringify([1, 4]));
+
