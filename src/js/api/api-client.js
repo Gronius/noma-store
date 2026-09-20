@@ -1,4 +1,7 @@
-const API_BASE_URL = "/api";
+import {
+  API_BASE_URL,
+  API_TIMEOUT,
+} from "./api-config.js";
 
 async function request(endpoint, options = {}) {
   const response = await fetch(
