@@ -1,29 +1,24 @@
 import "../../styles/main.scss";
 
-import {  products as initialProducts,} from "../../data/products.js";
-
 import {
   getAllProducts,
   getProductById,
-}from "../api/products-api.js";
+} from "../api/products-http.js";
 
 import { initHeader } from "../components/header.js";
-
 import { initCart } from "../components/cart.js";
-
 
 const productPage =
   document.querySelector(
     "[data-product-page]"
   );
 
-
 function getProductIdFromUrl() {
   const params = new URLSearchParams(
-  window.location.search
+    window.location.search
   );
 
-  return Number( params.get("id"));
+  return Number(params.get("id"));
 }
 
 function renderProduct(product) {
@@ -34,7 +29,6 @@ function renderProduct(product) {
   if (!product) {
     productPage.innerHTML = `
       <div class="product-page__not-found">
-
         <h1>
           Product not found
         </h1>
@@ -50,7 +44,6 @@ function renderProduct(product) {
         >
           Back to products
         </a>
-
       </div>
     `;
 
@@ -61,12 +54,10 @@ function renderProduct(product) {
     <div class="product-page__grid">
 
       <div class="product-page__media">
-
         <img
           src="${product.image}"
           alt="${product.alt}"
         />
-
       </div>
 
       <div class="product-page__details">
@@ -88,7 +79,6 @@ function renderProduct(product) {
         </p>
 
         <div class="product-page__actions">
-
           <button
             class="btn btn--primary"
             type="button"
@@ -96,33 +86,65 @@ function renderProduct(product) {
           >
             Add to cart
           </button>
-
         </div>
 
       </div>
-
     </div>
   `;
 }
 
-/* Products */
-
-const products =
-  getAllProducts(initialProducts);
-
-const productId =
-  getProductIdFromUrl();
-
-const product =
-  getProductById(
-    productId,
-    initialProducts
-  );
-
-renderProduct(product);
-
-/* Shared systems */
+/* ------------------------------
+   Header
+------------------------------ */
 
 initHeader();
 
-initCart(products);
+/* ------------------------------
+   Product
+------------------------------ */
+
+async function initializeProductPage() {
+  const productId =
+    getProductIdFromUrl();
+
+  try {
+    const [products, product] =
+      await Promise.all([
+        getAllProducts(),
+        getProductById(productId),
+      ]);
+
+    renderProduct(product);
+
+    initCart(products);
+  } catch (error) {
+    console.error(
+      "Product page load error:",
+      error
+    );
+
+    if (
+      error.message ===
+      "API request failed: 404 Not Found"
+    ) {
+      renderProduct(null);
+      return;
+    }
+
+    if (productPage) {
+      productPage.innerHTML = `
+        <div class="product-page__not-found">
+          <h1>
+            Unable to load product
+          </h1>
+
+          <p>
+            Please try again later.
+          </p>
+        </div>
+      `;
+    }
+  }
+}
+
+initializeProductPage();

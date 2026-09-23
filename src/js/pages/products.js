@@ -1,8 +1,6 @@
 import "../../styles/main.scss";
 
-import {products as initialProducts,} from "../../data/products.js";
-
-import { getAllProducts,} from "../api/products-api.js";
+import { getAllProducts } from "../api/products-http.js";
 
 import { initHeader } from "../components/header.js";
 
@@ -14,24 +12,9 @@ import { initCart } from "../components/cart.js";
 
 import { initFavorites,} from "../components/favorites.js";
 
-
-const products = getAllProducts(initialProducts);
-
-
-// const productsGrid = document.querySelector(
-//     "[data-products-grid]"
-//   );
-// const filterButtons = document.querySelectorAll(
-//     "[data-category]"
-//   );
-// function renderProducts( productsToRender) {
-//   if (!productsGrid) {
-//     return;
-//   }
-//   productsGrid.innerHTML = productsToRender
-//       .map(createProductCard)
-//       .join("");
-// }
+// const products = getAllProducts(initialProducts);
+let products = [];
+let currentProducts = products;
 
 //------- CARDS+MORE start
 
@@ -53,9 +36,7 @@ const loadMoreButton = document.querySelector(
 
 const PRODUCTS_PER_LOAD = 6;
 
-let currentProducts = products;
 let visibleProductsCount = PRODUCTS_PER_LOAD;
-
 
 function renderProducts() {
   if (!productsGrid) {
@@ -74,7 +55,6 @@ function renderProducts() {
 
   updateProductsMeta();
 }
-
 
 function updateProductsMeta() {
   if (productsCount) {
@@ -110,7 +90,6 @@ function setActiveFilter(
   );
 }
 
-
 function filterProducts(
   category
 ) {
@@ -124,37 +103,10 @@ function filterProducts(
   );
 }
 
-
 /* Header */
-
 initHeader();
 
-
 /* Category Filters */
-
-// filterButtons.forEach(
-//   (button) => {
-//     button.addEventListener(
-//       "click",
-//       () => {
-//         const category =
-//           button.dataset.category;
-
-//         const filteredProducts =
-//           filterProducts(category);
-
-//         renderProducts(
-//           filteredProducts
-//         );
-
-//         setActiveFilter(
-//           button
-//         );
-//       }
-//     );
-//   }
-// );
-
 
 filterButtons.forEach(
   (button) => {
@@ -193,13 +145,28 @@ loadMoreButton?.addEventListener(
 
 /* Initial Products */
 
-// renderProducts(products);
-renderProducts();
+async function initializeProductsPage() {
+  try {
+    products = await getAllProducts();
 
-/* Shared Systems */
+    currentProducts = products;
 
-initProductModal(products);
+    renderProducts();
 
-initCart(products);
+    initProductModal(products);
+    initCart(products);
+    initFavorites(products);
+  } catch (error) {
+    console.error("Products load error:", error);
 
-initFavorites(products);
+    if (productsGrid) {
+      productsGrid.innerHTML = `
+        <p class="products-grid__error">
+          Unable to load products.
+        </p>
+      `;
+    }
+  }
+}
+
+initializeProductsPage();
