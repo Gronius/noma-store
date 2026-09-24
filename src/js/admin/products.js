@@ -1,100 +1,126 @@
 import "../../styles/main.scss";
 
 import {
-  products as initialProducts,
-} from "../../data/products.js";
-
-import {
   getAllProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../api/products-api.js";
+} from "../api/products-http.js";
 
 const productsTable = document.querySelector(
-    "[data-products-table]"
-  );
+  "[data-products-table]"
+);
 
 const addProductButton = document.querySelector(
-    "[data-add-product]"
-  );
+  "[data-add-product]"
+);
 
 const formWrapper = document.querySelector(
-    "[data-product-form-wrapper]"
-  );
+  "[data-product-form-wrapper]"
+);
 
 const productForm = document.querySelector(
-    "#admin-product-form"
-  );
+  "#admin-product-form"
+);
 
 const formTitle = document.querySelector(
-    "[data-product-form-title]"
-  );
+  "[data-product-form-title]"
+);
 
 const formSubmit = document.querySelector(
-    "[data-product-submit]"
-  );
+  "[data-product-submit]"
+);
 
-const cancelButtons = document.querySelectorAll(
+const cancelButtons =
+  document.querySelectorAll(
     "[data-cancel-product]"
   );
 
-const productsSearchInput = document.querySelector(
-  "[data-products-search]"
-);
+const productsSearchInput =
+  document.querySelector(
+    "[data-products-search]"
+  );
 
-const productsCategoryFilter = document.querySelector(
-  "[data-products-category]"
-);
+const productsCategoryFilter =
+  document.querySelector(
+    "[data-products-category]"
+  );
 
-const productsSortSelect = document.querySelector(
-  "[data-products-sort]"
-);
+const productsSortSelect =
+  document.querySelector(
+    "[data-products-sort]"
+  );
 
-const productsCountElement = document.querySelector(
-  "[data-products-count]"
-);
+const productsCountElement =
+  document.querySelector(
+    "[data-products-count]"
+  );
 
-const imageInput = productForm?.querySelector(
-  "[data-product-image-url]"
-);
+const imageInput =
+  productForm?.querySelector(
+    "[data-product-image-url]"
+  );
 
-const altInput = productForm?.querySelector(
-  "[data-product-alt]"
-);
+const altInput =
+  productForm?.querySelector(
+    "[data-product-alt]"
+  );
 
-const imagePreview = productForm?.querySelector(
-  "[data-product-image-preview]"
-);
+const imagePreview =
+  productForm?.querySelector(
+    "[data-product-image-preview]"
+  );
 
-const imagePreviewImg = productForm?.querySelector(
-  "[data-product-image-preview-img]"
-);
+const imagePreviewImg =
+  productForm?.querySelector(
+    "[data-product-image-preview-img]"
+  );
 
+let products = [];
 let editingProductId = null;
 
 let searchQuery = "";
 let selectedCategory = "all";
 let selectedSort = "newest";
 
-/* ------------------------------
-   Helpers
------------------------------- */
+
+// ----------------------------------------
+// Helpers
+// ----------------------------------------
 
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
 
-function getProducts() {
-  return getAllProducts(
-    initialProducts
-  );
+
+// ----------------------------------------
+// Load Products
+// ----------------------------------------
+
+async function loadProducts() {
+  try {
+    products = await getAllProducts();
+    return products;
+  } catch (error) {
+    console.error(
+      "Products load error:",
+      error
+    );
+
+    products = [];
+
+    return products;
+  }
 }
-/* ------------------------------
-   Filter Products
------------------------------- */
-  function filterProducts(products) {
-  const query = searchQuery.trim().toLowerCase();
+
+
+// ----------------------------------------
+// Filter Products
+// ----------------------------------------
+
+function filterProducts(products) {
+  const query =
+    searchQuery.trim().toLowerCase();
 
   return products.filter((product) => {
     const matchesSearch =
@@ -105,7 +131,8 @@ function getProducts() {
 
     const matchesCategory =
       selectedCategory === "all" ||
-      product.category === selectedCategory;
+      product.category ===
+        selectedCategory;
 
     return (
       matchesSearch &&
@@ -113,69 +140,83 @@ function getProducts() {
     );
   });
 }
-/* ------------------------------
-  SORT Products
------------------------------- */
+
+
+// ----------------------------------------
+// Sort Products
+// ----------------------------------------
+
 function sortProducts(products) {
-  const sortedProducts = [...products];
+  const sortedProducts = [
+    ...products,
+  ];
 
   switch (selectedSort) {
     case "name":
-      return sortedProducts.sort((a, b) =>
-        a.title.localeCompare(
-          b.title,
-          undefined,
-          { sensitivity: "base" }
-        )
+      return sortedProducts.sort(
+        (a, b) =>
+          a.title.localeCompare(
+            b.title,
+            undefined,
+            {
+              sensitivity: "base",
+            }
+          )
       );
 
     case "price-asc":
       return sortedProducts.sort(
         (a, b) =>
-          Number(a.price) - Number(b.price)
+          Number(a.price) -
+          Number(b.price)
       );
 
     case "price-desc":
       return sortedProducts.sort(
         (a, b) =>
-          Number(b.price) - Number(a.price)
+          Number(b.price) -
+          Number(a.price)
       );
 
     case "category":
-      return sortedProducts.sort((a, b) =>
-        a.category.localeCompare(
-          b.category,
-          undefined,
-          { sensitivity: "base" }
-        )
+      return sortedProducts.sort(
+        (a, b) =>
+          a.category.localeCompare(
+            b.category,
+            undefined,
+            {
+              sensitivity: "base",
+            }
+          )
       );
 
     case "newest":
     default:
       return sortedProducts.sort(
         (a, b) =>
-          Number(b.id) - Number(a.id)
+          Number(b.id) -
+          Number(a.id)
       );
   }
 }
 
 
-/* ------------------------------
-   Render Products
------------------------------- */
+// ----------------------------------------
+// Render Products
+// ----------------------------------------
 
 function renderProducts() {
   if (!productsTable) {
     return;
   }
 
-const products = getProducts();
+  const filteredProducts =
+    filterProducts(products);
 
-const filteredProducts =
-  filterProducts(products);
-
-const sortedProducts =
-  sortProducts(filteredProducts);
+  const sortedProducts =
+    sortProducts(
+      filteredProducts
+    );
 
   if (productsCountElement) {
     productsCountElement.textContent =
@@ -186,7 +227,7 @@ const sortedProducts =
       }`;
   }
 
-  if (sortedProducts.length === 0){
+  if (sortedProducts.length === 0) {
     productsTable.innerHTML = `
       <tr>
         <td
@@ -202,18 +243,16 @@ const sortedProducts =
   }
 
   productsTable.innerHTML =
-     sortedProducts
+    sortedProducts
       .map(
         (product) => `
           <tr
             data-product-id="${product.id}"
           >
-
             <td>
               <div class="admin-product">
 
                 <div class="admin-product__image">
-
                   ${
                     product.image
                       ? `
@@ -224,13 +263,11 @@ const sortedProducts =
                       `
                       : ""
                   }
-
                 </div>
 
                 <div
                   class="admin-product__info"
                 >
-
                   <strong
                     class="admin-product__title"
                   >
@@ -242,32 +279,28 @@ const sortedProducts =
                   >
                     ID: ${product.id}
                   </span>
-
                 </div>
 
               </div>
             </td>
 
             <td>
-
               <span
                 class="admin-product__category"
               >
                 ${product.category}
               </span>
-
             </td>
 
             <td>
-
               <strong>
-                ${formatPrice(product.price)}
+                ${formatPrice(
+                  product.price
+                )}
               </strong>
-
             </td>
 
             <td>
-
               <span
                 class="
                   admin-product__featured
@@ -284,15 +317,12 @@ const sortedProducts =
                     : "No"
                 }
               </span>
-
             </td>
 
             <td>
-
               <div
                 class="admin-product__actions"
               >
-
                 <button
                   class="btn btn--ghost"
                   type="button"
@@ -314,20 +344,18 @@ const sortedProducts =
                 >
                   Delete
                 </button>
-
               </div>
-
             </td>
-
           </tr>
         `
       )
       .join("");
 }
 
-/* ------------------------------
-   Form State
------------------------------- */
+
+// ----------------------------------------
+// Form State
+// ----------------------------------------
 
 function setAddMode() {
   editingProductId = null;
@@ -346,11 +374,13 @@ function setAddMode() {
     "data-product-form-mode",
     "add"
   );
-   hideImagePreview();
+
+  hideImagePreview();
 }
 
 function setEditMode(product) {
-  editingProductId = product.id;
+  editingProductId =
+    product.id;
 
   if (formTitle) {
     formTitle.textContent =
@@ -366,7 +396,6 @@ function setEditMode(product) {
     "data-product-form-mode",
     "edit"
   );
-
 
   const titleInput =
     productForm?.querySelector(
@@ -408,7 +437,6 @@ function setEditMode(product) {
       '[name="featured"]'
     );
 
-
   if (titleInput) {
     titleInput.value =
       product.title;
@@ -424,12 +452,14 @@ function setEditMode(product) {
       product.price;
   }
 
- if (imageInput) {
-  imageInput.value =
-    product.image || "";
+  if (imageInput) {
+    imageInput.value =
+      product.image || "";
 
-  updateImagePreview(imageInput.value);
-}
+    updateImagePreview(
+      imageInput.value
+    );
+  }
 
   if (altInput) {
     altInput.value =
@@ -452,9 +482,10 @@ function setEditMode(product) {
   }
 }
 
-/* ------------------------------
-   Show / Hide Form
------------------------------- */
+
+// ----------------------------------------
+// Show / Hide Form
+// ----------------------------------------
 
 function showProductForm() {
   formWrapper?.removeAttribute(
@@ -484,9 +515,10 @@ function hideProductForm() {
   setAddMode();
 }
 
-/* ------------------------------
-   Validation
------------------------------- */
+
+// ----------------------------------------
+// Validation
+// ----------------------------------------
 
 function showFieldError(
   fieldName,
@@ -516,7 +548,9 @@ function showFieldError(
   error.hidden = false;
 }
 
-function clearFieldError(fieldName) {
+function clearFieldError(
+  fieldName
+) {
   const field =
     productForm?.querySelector(
       `[name="${fieldName}"]`
@@ -560,19 +594,27 @@ function validateProductForm(
   let isValid = true;
 
   const title =
-    formData.get("title")?.trim();
+    formData
+      .get("title")
+      ?.trim();
 
   const category =
     formData.get("category");
 
   const price =
-    Number(formData.get("price"));
+    Number(
+      formData.get("price")
+    );
 
   const image =
-    formData.get("image")?.trim();
+    formData
+      .get("image")
+      ?.trim();
 
   const alt =
-    formData.get("alt")?.trim();
+    formData
+      .get("alt")
+      ?.trim();
 
   const description =
     formData
@@ -610,13 +652,12 @@ function validateProductForm(
   }
 
   if (
-  image &&
-  !(
-    /^https?:\/\/.+/.test(image) ||
-    image.startsWith("/")
-  )
-) 
-  {
+    image &&
+    !(
+      /^https?:\/\/.+/.test(image) ||
+      image.startsWith("/")
+    )
+  ) {
     showFieldError(
       "image",
       "Please enter a valid image URL."
@@ -646,16 +687,17 @@ function validateProductForm(
   return isValid;
 }
 
-/* ------------------------------
-   Create / Update
------------------------------- */
 
-function getProductData(
-  formData
-) {
+// ----------------------------------------
+// Product Data
+// ----------------------------------------
+
+function getProductData(formData) {
   return {
     title:
-      formData.get("title").trim(),
+      formData
+        .get("title")
+        .trim(),
 
     category:
       formData.get("category"),
@@ -666,10 +708,14 @@ function getProductData(
       ),
 
     image:
-      formData.get("image").trim(),
+      formData
+        .get("image")
+        .trim(),
 
     alt:
-      formData.get("alt").trim(),
+      formData
+        .get("alt")
+        .trim(),
 
     description:
       formData
@@ -677,14 +723,21 @@ function getProductData(
         .trim(),
 
     badge:
-      formData.get("badge") || null,
+      formData.get("badge") ||
+      null,
 
     featured:
-      formData.get("featured") === "on",
+      formData.get("featured") ===
+      "on",
   };
 }
 
-function handleSubmit(event) {
+
+// ----------------------------------------
+// Create / Update
+// ----------------------------------------
+
+async function handleSubmit(event) {
   event.preventDefault();
 
   if (!productForm) {
@@ -694,7 +747,6 @@ function handleSubmit(event) {
   const formData =
     new FormData(productForm);
 
-
   if (
     !validateProductForm(
       formData
@@ -703,91 +755,130 @@ function handleSubmit(event) {
     return;
   }
 
-
   const productData =
     getProductData(formData);
 
+  try {
+    if (
+      editingProductId === null
+    ) {
+      await createProduct(
+        productData
+      );
+    } else {
+      await updateProduct(
+        editingProductId,
+        productData
+      );
+    }
 
-  if (
-    editingProductId === null
-  ) {
-    createProduct(
-      productData
-    );
-  } else {
-    updateProduct(
-      editingProductId,
-      productData
+    hideProductForm();
+
+    await loadProducts();
+
+    renderProducts();
+  } catch (error) {
+    console.error(
+      "Product save error:",
+      error
     );
   }
-
-
-  hideProductForm();
-
-  renderProducts();
 }
 
-/* ------------------------------
-  Preview Image
------------------------------- */
+
+// ----------------------------------------
+// Preview Image
+// ----------------------------------------
+
 function hideImagePreview() {
-  if (!imagePreview || !imagePreviewImg) return;
+  if (
+    !imagePreview ||
+    !imagePreviewImg
+  ) {
+    return;
+  }
 
   imagePreview.hidden = true;
-  imagePreviewImg.removeAttribute("src");
+  imagePreviewImg.removeAttribute(
+    "src"
+  );
   imagePreviewImg.alt = "";
 }
 
 function updateImagePreview(url) {
-  if (!imagePreview || !imagePreviewImg) return;
+  if (
+    !imagePreview ||
+    !imagePreviewImg
+  ) {
+    return;
+  }
 
-  const imageUrl = url.trim();
+  const imageUrl =
+    url.trim();
 
   if (!imageUrl) {
     hideImagePreview();
     return;
   }
 
-  const previewImage = new Image();
+  const previewImage =
+    new Image();
 
   previewImage.onload = () => {
-    imagePreviewImg.src = imageUrl;
-    imagePreviewImg.alt =
-      altInput?.value.trim() || "Product image preview";
+    imagePreviewImg.src =
+      imageUrl;
 
-    imagePreview.hidden = false;
+    imagePreviewImg.alt =
+      altInput?.value.trim() ||
+      "Product image preview";
+
+    imagePreview.hidden =
+      false;
   };
 
   previewImage.onerror = () => {
     hideImagePreview();
   };
 
-  previewImage.src = imageUrl;
+  previewImage.src =
+    imageUrl;
 }
 
-imageInput?.addEventListener("input", () => {
-  updateImagePreview(imageInput.value);
-});
-
-altInput?.addEventListener("input", () => {
-  if (
-    imagePreview &&
-    imagePreviewImg &&
-    !imagePreview.hidden
-  ) {
-    imagePreviewImg.alt =
-      altInput.value.trim() || "Product image preview";
+imageInput?.addEventListener(
+  "input",
+  () => {
+    updateImagePreview(
+      imageInput.value
+    );
   }
-});
+);
 
-/* ------------------------------
-   Edit
------------------------------- */
+altInput?.addEventListener(
+  "input",
+  () => {
+    if (
+      imagePreview &&
+      imagePreviewImg &&
+      !imagePreview.hidden
+    ) {
+      imagePreviewImg.alt =
+        altInput.value.trim() ||
+        "Product image preview";
+    }
+  }
+);
+
+
+// ----------------------------------------
+// Edit
+// ----------------------------------------
 
 function handleEdit(productId) {
-  const product = getProducts().find(
+  const product =
+    products.find(
       (item) =>
-        item.id === Number(productId)
+        item.id ===
+        Number(productId)
     );
 
   if (!product) {
@@ -797,38 +888,57 @@ function handleEdit(productId) {
   setEditMode(product);
 
   showProductForm();
-
-  //  deleteProduct(product.id);
-
-  // renderProducts();
 }
 
-function handleDelete(productId) {
+
+// ----------------------------------------
+// Delete
+// ----------------------------------------
+
+async function handleDelete(
+  productId
+) {
   const product =
-    getProducts().find(
+    products.find(
       (item) =>
-        item.id === Number(productId)
+        item.id ===
+        Number(productId)
     );
 
   if (!product) {
     return;
   }
 
-  const confirmed = window.confirm(
-    `Are you sure you want to delete "${product.title}"?`
-  );
+  const confirmed =
+    window.confirm(
+      `Are you sure you want to delete "${product.title}"?`
+    );
 
   if (!confirmed) {
     return;
   }
 
-  deleteProduct(product.id);
+  try {
+    await deleteProduct(
+      product.id
+    );
 
-  renderProducts();
+    await loadProducts();
+
+    renderProducts();
+  } catch (error) {
+    console.error(
+      "Product delete error:",
+      error
+    );
+  }
 }
-/* ------------------------------
-   Products Search Input
------------------------------- */
+
+
+// ----------------------------------------
+// Products Search
+// ----------------------------------------
+
 productsSearchInput?.addEventListener(
   "input",
   () => {
@@ -838,10 +948,13 @@ productsSearchInput?.addEventListener(
     renderProducts();
   }
 );
-/* ------------------------------
-   Подія Category
------------------------------- */
-  productsCategoryFilter?.addEventListener(
+
+
+// ----------------------------------------
+// Category
+// ----------------------------------------
+
+productsCategoryFilter?.addEventListener(
   "change",
   () => {
     selectedCategory =
@@ -850,6 +963,11 @@ productsSearchInput?.addEventListener(
     renderProducts();
   }
 );
+
+
+// ----------------------------------------
+// Sort
+// ----------------------------------------
 
 productsSortSelect?.addEventListener(
   "change",
@@ -860,19 +978,19 @@ productsSortSelect?.addEventListener(
     renderProducts();
   }
 );
-/* ------------------------------
-   Events
------------------------------- */
+
+
+// ----------------------------------------
+// Events
+// ----------------------------------------
 
 addProductButton?.addEventListener(
   "click",
   () => {
     setAddMode();
-
     showProductForm();
   }
 );
-
 
 cancelButtons.forEach(
   (button) => {
@@ -888,7 +1006,6 @@ productForm?.addEventListener(
   handleSubmit
 );
 
-
 productsTable?.addEventListener(
   "click",
   (event) => {
@@ -901,12 +1018,13 @@ productsTable?.addEventListener(
       return;
     }
 
-     event.stopPropagation();
+    event.stopPropagation();
 
-    const productId = actionButton.dataset.productId;
+    const productId =
+      actionButton.dataset.productId;
 
-    const action =  actionButton.dataset.productAction;
-
+    const action =
+      actionButton.dataset.productAction;
 
     if (action === "edit") {
       handleEdit(productId);
@@ -918,10 +1036,17 @@ productsTable?.addEventListener(
   }
 );
 
-/* ------------------------------
-   Initial Render
------------------------------- */
+
+// ----------------------------------------
+// Initial Render
+// ----------------------------------------
 
 setAddMode();
 
-renderProducts();
+async function initializeProductsPage() {
+  await loadProducts();
+
+  renderProducts();
+}
+
+initializeProductsPage();
