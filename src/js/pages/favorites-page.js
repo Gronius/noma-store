@@ -1,12 +1,8 @@
 import "../../styles/main.scss";
 
 import {
-  products as initialProducts,
-} from "../../data/products.js";
-
-import {
   getAllProducts,
-} from "../api/products-api.js";
+} from "../api/products-http.js";
 
 import {
   getFavoritesFromStorage,
@@ -28,7 +24,6 @@ import {
   createProductCard,
 } from "../components/product-card.js";
 
-
 const favoritesGrid =
   document.querySelector(
     "[data-favorites-grid]"
@@ -39,11 +34,7 @@ const favoritesEmpty =
     "[data-favorites-empty]"
   );
 
-
-function getFavoriteProducts() {
-  const products =
-    getAllProducts(initialProducts);
-
+function getFavoriteProducts(products) {
   const favoriteIds =
     getFavoritesFromStorage();
 
@@ -53,15 +44,13 @@ function getFavoriteProducts() {
   );
 }
 
-
-function renderFavorites() {
+function renderFavorites(products) {
   if (!favoritesGrid) {
     return;
   }
 
   const favoriteProducts =
-    getFavoriteProducts();
-
+    getFavoriteProducts(products);
 
   if (favoriteProducts.length === 0) {
     favoritesGrid.innerHTML = "";
@@ -73,12 +62,10 @@ function renderFavorites() {
     return;
   }
 
-
   favoritesEmpty?.setAttribute(
     "hidden",
     ""
   );
-
 
   favoritesGrid.innerHTML =
     favoriteProducts
@@ -86,24 +73,42 @@ function renderFavorites() {
       .join("");
 }
 
-
-/* Current products */
-
-const products =
-  getAllProducts(initialProducts);
-
-
-/* Shared systems */
+/* ------------------------------
+   Header
+------------------------------ */
 
 initHeader();
 
-initFavorites(products);
+/* ------------------------------
+   Favorites Page
+------------------------------ */
 
-initProductModal(products);
+async function initializeFavoritesPage() {
+  try {
+    const products =
+      await getAllProducts();
 
-initCart(products);
+    renderFavorites(products);
 
+    initFavorites(products);
+    initProductModal(products);
+    initCart(products);
+  } catch (error) {
+    console.error(
+      "Favorites page load error:",
+      error
+    );
 
-/* Initial render */
+    if (favoritesGrid) {
+      favoritesGrid.innerHTML = `
+        <p class="favorites-page__error">
+          Unable to load products.
+        </p>
+      `;
+    }
+  }
+}
+
+initializeFavoritesPage();/* Initial render */
 
 renderFavorites();
