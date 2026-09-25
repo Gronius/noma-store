@@ -4,7 +4,8 @@ import {
   getAllProducts,
 } from "../api/products-http.js";
 
-import { createOrder } from "../api/orders-api.js";
+// import { createOrder } from "../api/orders-api.js";
+import { createOrder } from "../api/orders-http.js";
 
 import {
   getCartFromStorage,
@@ -304,7 +305,7 @@ function showSuccess(order) {
   }
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
 
   if (cart.length === 0) {
@@ -328,7 +329,7 @@ function handleSubmit(event) {
     return;
   }
 
-  const order = createOrder({
+  const order = await createOrder({
     customer: {
       name: formData
         .get("name")

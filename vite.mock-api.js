@@ -2,6 +2,8 @@ import { products } from "./src/data/products.js";
 
 let mockProducts = [...products];
 
+let mockOrders = [];
+
 export function mockApiPlugin() {
   return {
     name: "noma-mock-api",
@@ -281,6 +283,284 @@ export function mockApiPlugin() {
 
           return;
         }
+
+        // ----------------------------------------
+// GET /api/orders
+// ----------------------------------------
+
+if (
+  pathname === "/api/orders" &&
+  req.method === "GET"
+) {
+  res.statusCode = 200;
+  res.setHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  res.end(
+    JSON.stringify(mockOrders)
+  );
+
+  return;
+}
+
+// ----------------------------------------
+// GET /api/orders/:id
+// ----------------------------------------
+
+const orderMatch =
+  pathname.match(/^\/api\/orders\/([^/]+)$/);
+
+if (
+  orderMatch &&
+  req.method === "GET"
+) {
+  const orderId =
+    decodeURIComponent(orderMatch[1]);
+
+  const order =
+    mockOrders.find(
+      (item) => item.id === orderId
+    );
+
+  if (!order) {
+    res.statusCode = 404;
+    res.setHeader(
+      "Content-Type",
+      "application/json"
+    );
+
+    res.end(
+      JSON.stringify({
+        error: "Order not found",
+      })
+    );
+
+    return;
+  }
+
+  res.statusCode = 200;
+  res.setHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  res.end(
+    JSON.stringify(order)
+  );
+
+  return;
+}
+
+// ----------------------------------------
+// POST /api/orders
+// ----------------------------------------
+
+if (
+  pathname === "/api/orders" &&
+  req.method === "POST"
+) {
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  req.on("end", () => {
+    try {
+      const orderData =
+        JSON.parse(body);
+
+      const order = {
+        id: `NOMA-${Date.now()}`,
+        date:
+          new Date().toISOString(),
+        ...orderData,
+        status: "pending",
+      };
+
+      mockOrders.push(order);
+
+      res.statusCode = 201;
+      res.setHeader(
+        "Content-Type",
+        "application/json"
+      );
+
+      res.end(
+        JSON.stringify(order)
+      );
+    } catch (error) {
+      res.statusCode = 400;
+      res.setHeader(
+        "Content-Type",
+        "application/json"
+      );
+
+      res.end(
+        JSON.stringify({
+          error: "Invalid JSON body",
+        })
+      );
+    }
+  });
+
+  return;
+}
+
+// ----------------------------------------
+// PATCH /api/orders/:id
+// ----------------------------------------
+
+if (
+  orderMatch &&
+  req.method === "PATCH"
+) {
+  const orderId =
+    decodeURIComponent(orderMatch[1]);
+
+  const order =
+    mockOrders.find(
+      (item) => item.id === orderId
+    );
+
+  if (!order) {
+    res.statusCode = 404;
+    res.setHeader(
+      "Content-Type",
+      "application/json"
+    );
+
+    res.end(
+      JSON.stringify({
+        error: "Order not found",
+      })
+    );
+
+    return;
+  }
+
+  let body = "";
+
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  req.on("end", () => {
+    try {
+      const updateData =
+        JSON.parse(body);
+
+      if (
+        updateData.status !==
+          "pending" &&
+        updateData.status !==
+          "processing" &&
+        updateData.status !==
+          "completed" &&
+        updateData.status !==
+          "cancelled"
+      ) {
+        res.statusCode = 400;
+        res.setHeader(
+          "Content-Type",
+          "application/json"
+        );
+
+        res.end(
+          JSON.stringify({
+            error:
+              "Invalid order status",
+          })
+        );
+
+        return;
+      }
+
+      order.status =
+        updateData.status;
+
+      res.statusCode = 200;
+      res.setHeader(
+        "Content-Type",
+        "application/json"
+      );
+
+      res.end(
+        JSON.stringify(order)
+      );
+    } catch (error) {
+      res.statusCode = 400;
+      res.setHeader(
+        "Content-Type",
+        "application/json"
+      );
+
+      res.end(
+        JSON.stringify({
+          error: "Invalid JSON body",
+        })
+      );
+    }
+  });
+
+  return;
+}
+
+// ----------------------------------------
+// DELETE /api/orders/:id
+// ----------------------------------------
+
+if (
+  orderMatch &&
+  req.method === "DELETE"
+) {
+  const orderId =
+    decodeURIComponent(orderMatch[1]);
+
+  const orderIndex =
+    mockOrders.findIndex(
+      (item) => item.id === orderId
+    );
+
+  if (orderIndex === -1) {
+    res.statusCode = 404;
+    res.setHeader(
+      "Content-Type",
+      "application/json"
+    );
+
+    res.end(
+      JSON.stringify({
+        error: "Order not found",
+      })
+    );
+
+    return;
+  }
+
+  const deletedOrder =
+    mockOrders.splice(
+      orderIndex,
+      1
+    )[0];
+
+  res.statusCode = 200;
+  res.setHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  res.end(
+    JSON.stringify({
+      message: "Order deleted",
+      order: deletedOrder,
+    })
+  );
+
+  return;
+}
 
         // ----------------------------------------
         // Other requests
