@@ -5,8 +5,7 @@ import {
   updateOrderStatus,
   deleteOrder,
   ORDER_STATUSES,
-} from "../api/orders-api.js";
-
+} from "../api/orders-http.js";
 
 const ordersTable =
   document.querySelector(
@@ -18,12 +17,12 @@ const ordersCount =
     "[data-orders-count]"
   );
 
-const ordersSearchInput =  //added
+const ordersSearchInput =
   document.querySelector(
     "[data-orders-search]"
   );
 
-const ordersStatusFilter =  //added
+const ordersStatusFilter =
   document.querySelector(
     "[data-orders-status]"
   );
@@ -53,8 +52,6 @@ const summaryCancelled =
     "[data-summary-cancelled]"
   );
 
-
-
 const orderModal =
   document.querySelector(
     "[data-order-modal]"
@@ -75,16 +72,19 @@ const orderModalCloseButtons =
     "[data-order-modal-close]"
   );
 
-let searchQuery = "";  //add
-let selectedStatus = "all";  //add
+let orders = [];
+
+let searchQuery = "";
+let selectedStatus = "all";
 
 
-
+// ----------------------------------------
+// Helpers
+// ----------------------------------------
 
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
-
 
 function formatDate(date) {
   return new Intl.DateTimeFormat(
@@ -99,7 +99,6 @@ function formatDate(date) {
   ).format(new Date(date));
 }
 
-
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -109,7 +108,6 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-
 function getItemCount(order) {
   return order.items.reduce(
     (total, item) =>
@@ -118,13 +116,11 @@ function getItemCount(order) {
   );
 }
 
-
 function getStatusClass(status) {
   return ORDER_STATUSES.includes(status)
     ? status
     : "pending";
 }
-
 
 function renderStatusOptions(
   currentStatus
@@ -147,209 +143,70 @@ function renderStatusOptions(
     .join("");
 }
 
-// -----Filter order added
-function filterOrders(orders) {
-  const query = searchQuery.trim().toLowerCase();
 
-  return orders.filter((order) => {
-    const matchesSearch =
-      !query ||
-      order.id.toLowerCase().includes(query) ||
-      order.customer?.name
-        ?.toLowerCase()
-        .includes(query);
+// ----------------------------------------
+// Load Orders
+// ----------------------------------------
 
-    const matchesStatus =
-      selectedStatus === "all" ||
-      order.status === selectedStatus;
+async function loadOrders() {
+  try {
+    orders =
+      await getAllOrders();
 
-    return matchesSearch && matchesStatus;
-  });
+    return orders;
+  } catch (error) {
+    console.error(
+      "Orders load error:",
+      error
+    );
+
+    orders = [];
+
+    return orders;
+  }
 }
 
-//Пошук
-ordersSearchInput?.addEventListener( //added
-  "input",
-  () => {
-    searchQuery =
-      ordersSearchInput.value;
 
-    renderOrders();
-  }
-);
+// ----------------------------------------
+// Filter Orders
+// ----------------------------------------
 
-// Фільтр статусу
-ordersStatusFilter?.addEventListener(
-  "change",
-  () => {
-    selectedStatus =
-      ordersStatusFilter.value;
+function filterOrders(ordersList) {
+  const query =
+    searchQuery
+      .trim()
+      .toLowerCase();
 
-    renderOrders();
-  }
-);
+  return ordersList.filter(
+    (order) => {
+      const matchesSearch =
+        !query ||
+        order.id
+          .toLowerCase()
+          .includes(query) ||
+        order.customer?.name
+          ?.toLowerCase()
+          .includes(query);
+
+      const matchesStatus =
+        selectedStatus === "all" ||
+        order.status ===
+          selectedStatus;
+
+      return (
+        matchesSearch &&
+        matchesStatus
+      );
+    }
+  );
+}
 
 
-// //  --Render Orders 
-// function renderOrders() {
-//   if (!ordersTable) {
-//     return;
-//   }
-//   const orders =
-//     getAllOrders();
-//    const filteredOrders =  //added
-//     filterOrders(allOrders);
-//   if (ordersCount) {
-//     ordersCount.textContent =
-//       `${orders.length} ${
-//         orders.length === 1
-//           ? "order"
-//           : "orders"
-//       }`;
-//   }
-//   if (orders.length === 0) {
-//     ordersTable.innerHTML = `
-//       <tr>
-//         <td
-//           class="admin-orders__empty"
-//           colspan="7"
-//         >
-//           No orders yet.
-//         </td>
-//       </tr>
-//     `;
-//     return;
-//   }
-//   const sortedOrders =
-//     [...orders].sort(
-//       (a, b) =>
-//         new Date(b.date) -
-//         new Date(a.date)
-//     );
-//   ordersTable.innerHTML =
-//     sortedOrders
-//       .map(
-//         (order) => {
-//           const itemCount =
-//             getItemCount(order);
-//           const statusClass =
-//             getStatusClass(
-//               order.status
-//             );
-//           return `
-//             <tr
-//               data-order-id="${escapeHtml(
-//                 order.id
-//               )}"
-//             >
-//               <td>
-//                 <strong
-//                   class="admin-order__id"
-//                 >
-//                   ${escapeHtml(
-//                     order.id
-//                   )}
-//                 </strong>
-//               </td>
-//               <td>
-//                 <span
-//                   class="admin-order__customer"
-//                 >
-//                   ${escapeHtml(
-//                     order.customer?.name ??
-//                     "Unknown customer"
-//                   )}
-//                 </span>
-//               </td>
-//               <td>
-//                 <span
-//                   class="admin-order__date"
-//                 >
-//                   ${formatDate(
-//                     order.date
-//                   )}
-//                 </span>
-//               </td>
-//               <td>
-//                 <span
-//                   class="admin-order__items"
-//                 >
-//                   ${itemCount}
-//                   ${
-//                     itemCount === 1
-//                       ? "item"
-//                       : "items"
-//                   }
-//                 </span>
-//               </td>
-//               <td>
-//                 <strong
-//                   class="admin-order__total"
-//                 >
-//                   ${formatPrice(
-//                     order.total
-//                   )}
-//                 </strong>
-//               </td>
-//               <td>
-//                 <select
-//                   class="
-//                     admin-order__status-select
-//                     admin-order__status-select--${statusClass}
-//                   "
-//                   data-order-status
-//                   data-order-id="${escapeHtml(
-//                     order.id
-//                   )}"
-//                   aria-label="Change status for ${escapeHtml(
-//                     order.id
-//                   )}"
-//                 >
-//                   ${renderStatusOptions(
-//                     order.status
-//                   )}
-//                 </select>
-//               </td>
-//               <td>
-//   <div class="admin-order__actions">
-//     <button
-//       class="btn btn--ghost"
-//       type="button"
-//       data-order-action="view"
-//       data-order-id="${escapeHtml(
-//         order.id
-//       )}"
-//     >
-//       View
-//     </button>
-//     <button
-//       class="
-//         btn
-//         btn--ghost
-//         admin-order__delete
-//       "
-//       type="button"
-//       data-order-action="delete"
-//       data-order-id="${escapeHtml(
-//         order.id
-//       )}"
-//     >
-//       Delete
-//     </button>
+// ----------------------------------------
+// Orders Summary
+// ----------------------------------------
 
-//   </div>
-// </td>
-//             </tr>
-//           `;
-//         }
-//       )
-//       .join("");
-// }
-
-// ---- ORDER SUmmary
 function renderOrdersSummary() {
-  const orders = getAllOrders();
-
   const counts = {
     pending: 0,
     processing: 0,
@@ -394,7 +251,11 @@ function renderOrdersSummary() {
   }
 }
 
-// --RENDER ORDDER new
+
+// ----------------------------------------
+// Render Orders
+// ----------------------------------------
+
 function renderOrders() {
   renderOrdersSummary();
 
@@ -402,11 +263,8 @@ function renderOrders() {
     return;
   }
 
-  const allOrders =
-    getAllOrders();
-
   const filteredOrders =
-    filterOrders(allOrders);
+    filterOrders(orders);
 
   if (ordersCount) {
     ordersCount.textContent =
@@ -417,7 +275,9 @@ function renderOrders() {
       }`;
   }
 
-  if (filteredOrders.length === 0) {
+  if (
+    filteredOrders.length === 0
+  ) {
     ordersTable.innerHTML = `
       <tr>
         <td
@@ -473,8 +333,9 @@ function renderOrders() {
                   class="admin-order__customer"
                 >
                   ${escapeHtml(
-                    order.customer?.name ??
-                    "Unknown customer"
+                    order.customer
+                      ?.name ??
+                      "Unknown customer"
                   )}
                 </span>
               </td>
@@ -533,7 +394,9 @@ function renderOrders() {
               </td>
 
               <td>
-                <div class="admin-order__actions">
+                <div
+                  class="admin-order__actions"
+                >
                   <button
                     class="btn btn--ghost"
                     type="button"
@@ -568,13 +431,43 @@ function renderOrders() {
       )
       .join("");
 }
-// --RENDER ORDDER end
 
+
+// ----------------------------------------
+// Search
+// ----------------------------------------
+
+ordersSearchInput?.addEventListener(
+  "input",
+  () => {
+    searchQuery =
+      ordersSearchInput.value;
+
+    renderOrders();
+  }
+);
+
+
+// ----------------------------------------
+// Status Filter
+// ----------------------------------------
+
+ordersStatusFilter?.addEventListener(
+  "change",
+  () => {
+    selectedStatus =
+      ordersStatusFilter.value;
+
+    renderOrders();
+  }
+);
+
+
+// ----------------------------------------
+// Open Order Modal
+// ----------------------------------------
 
 function openOrderModal(orderId) {
-  const orders =
-    getAllOrders();
-
   const order =
     orders.find(
       (item) =>
@@ -584,7 +477,6 @@ function openOrderModal(orderId) {
   if (!order) {
     return;
   }
-
 
   if (orderModalTitle) {
     orderModalTitle.textContent =
@@ -613,8 +505,8 @@ function openOrderModal(orderId) {
               <dt>Name</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.name ??
-                  "—"
+                  order.customer
+                    ?.name ?? "—"
                 )}
               </dd>
             </div>
@@ -623,8 +515,8 @@ function openOrderModal(orderId) {
               <dt>Email</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.email ??
-                  "—"
+                  order.customer
+                    ?.email ?? "—"
                 )}
               </dd>
             </div>
@@ -633,8 +525,8 @@ function openOrderModal(orderId) {
               <dt>Phone</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.phone ??
-                  "—"
+                  order.customer
+                    ?.phone ?? "—"
                 )}
               </dd>
             </div>
@@ -643,8 +535,8 @@ function openOrderModal(orderId) {
               <dt>Address</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.address ??
-                  "—"
+                  order.customer
+                    ?.address ?? "—"
                 )}
               </dd>
             </div>
@@ -653,8 +545,8 @@ function openOrderModal(orderId) {
               <dt>City</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.city ??
-                  "—"
+                  order.customer
+                    ?.city ?? "—"
                 )}
               </dd>
             </div>
@@ -663,8 +555,8 @@ function openOrderModal(orderId) {
               <dt>Postal Code</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.postalCode ??
-                  "—"
+                  order.customer
+                    ?.postalCode ?? "—"
                 )}
               </dd>
             </div>
@@ -673,8 +565,9 @@ function openOrderModal(orderId) {
               <dt>Payment</dt>
               <dd>
                 ${escapeHtml(
-                  order.customer?.paymentMethod ??
-                  "—"
+                  order.customer
+                    ?.paymentMethod ??
+                    "—"
                 )}
               </dd>
             </div>
@@ -682,6 +575,7 @@ function openOrderModal(orderId) {
           </dl>
 
         </section>
+
         <section
           class="admin-order-details__section"
         >
@@ -720,8 +614,12 @@ function openOrderModal(orderId) {
 
                     <strong>
                       ${formatPrice(
-                        Number(item.price) *
-                        Number(item.quantity)
+                        Number(
+                          item.price
+                        ) *
+                        Number(
+                          item.quantity
+                        )
                       )}
                     </strong>
 
@@ -733,6 +631,7 @@ function openOrderModal(orderId) {
           </div>
 
         </section>
+
         <section
           class="admin-order-details__section"
         >
@@ -766,7 +665,9 @@ function openOrderModal(orderId) {
             </div>
 
             <div
-              class="admin-order-details__total"
+              class="
+                admin-order-details__total
+              "
             >
               <dt>Total</dt>
               <dd>
@@ -793,6 +694,11 @@ function openOrderModal(orderId) {
   );
 }
 
+
+// ----------------------------------------
+// Close Order Modal
+// ----------------------------------------
+
 function closeOrderModal() {
   orderModal?.classList.remove(
     "is-open"
@@ -804,34 +710,53 @@ function closeOrderModal() {
   );
 }
 
-function handleDeleteOrder(orderId) {
-  const orders = getAllOrders();
 
-  const order = orders.find(
-    (item) => item.id === orderId
-  );
+// ----------------------------------------
+// Delete Order
+// ----------------------------------------
+
+async function handleDeleteOrder(
+  orderId
+) {
+  const order =
+    orders.find(
+      (item) =>
+        item.id === orderId
+    );
 
   if (!order) {
     return;
   }
 
-  const confirmed = window.confirm(
-    `Are you sure you want to delete order "${order.id}"?`
-  );
+  const confirmed =
+    window.confirm(
+      `Are you sure you want to delete order "${order.id}"?`
+    );
 
   if (!confirmed) {
     return;
   }
 
-  deleteOrder(orderId);
+  try {
+    await deleteOrder(orderId);
 
-  closeOrderModal();
+    closeOrderModal();
 
-  renderOrders();
+    await loadOrders();
+
+    renderOrders();
+  } catch (error) {
+    console.error(
+      "Order delete error:",
+      error
+    );
+  }
 }
 
 
-/* View order */
+// ----------------------------------------
+// View / Delete Events
+// ----------------------------------------
 
 ordersTable?.addEventListener(
   "click",
@@ -846,28 +771,31 @@ ordersTable?.addEventListener(
     }
 
     const action =
-      actionButton.dataset.orderAction;
+      actionButton.dataset
+        .orderAction;
 
     const orderId =
-      actionButton.dataset.orderId;
-
+      actionButton.dataset
+        .orderId;
 
     if (action === "view") {
       openOrderModal(orderId);
     }
 
     if (action === "delete") {
-     handleDeleteOrder(orderId);
+      handleDeleteOrder(orderId);
     }
   }
 );
 
 
-/* Change order status */
+// ----------------------------------------
+// Change Order Status
+// ----------------------------------------
 
 ordersTable?.addEventListener(
   "change",
-  (event) => {
+  async (event) => {
     const statusSelect =
       event.target.closest(
         "[data-order-status]"
@@ -878,11 +806,11 @@ ordersTable?.addEventListener(
     }
 
     const orderId =
-      statusSelect.dataset.orderId;
+      statusSelect.dataset
+        .orderId;
 
     const newStatus =
       statusSelect.value;
-
 
     if (
       !ORDER_STATUSES.includes(
@@ -892,21 +820,28 @@ ordersTable?.addEventListener(
       return;
     }
 
-
-    const updatedOrder =
-      updateOrderStatus(
+    try {
+      await updateOrderStatus(
         orderId,
         newStatus
       );
 
+      await loadOrders();
 
-    if (!updatedOrder) {
-      return;
+      renderOrders();
+    } catch (error) {
+      console.error(
+        "Order status update error:",
+        error
+      );
     }
-    renderOrders();
   }
 );
-/* Close modal */
+
+
+// ----------------------------------------
+// Close Modal
+// ----------------------------------------
 
 orderModalCloseButtons.forEach(
   (button) => {
@@ -916,7 +851,11 @@ orderModalCloseButtons.forEach(
     );
   }
 );
-/* Escape */
+
+
+// ----------------------------------------
+// Escape
+// ----------------------------------------
 
 document.addEventListener(
   "keydown",
@@ -931,6 +870,16 @@ document.addEventListener(
     }
   }
 );
-/* Initial render */
 
-renderOrders();
+
+// ----------------------------------------
+// Initial Render
+// ----------------------------------------
+
+async function initializeOrdersPage() {
+  await loadOrders();
+
+  renderOrders();
+}
+
+initializeOrdersPage();
