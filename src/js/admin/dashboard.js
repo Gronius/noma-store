@@ -1,16 +1,12 @@
 import "../../styles/main.scss";
 
 import {
-  products as initialProducts,
-} from "../../data/products.js";
-
-import {
   getAllProducts,
-} from "../api/products-api.js";
+} from "../api/products-http.js";
 
 import {
   getAllOrders,
-} from "../api/orders-api.js";
+} from "../api/orders-http.js";
 
 const productCountElement =
   document.querySelector(
@@ -37,11 +33,13 @@ const recentOrdersContainer =
     "[data-recent-orders]"
   );
 
-const products =
-  getAllProducts(initialProducts);
+let products = [];
+let orders = [];
 
-const orders =
-  getAllOrders();
+
+// ----------------------------------------
+// Helpers
+// ----------------------------------------
 
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
@@ -57,22 +55,36 @@ function formatDate(date) {
     }
   ).format(new Date(date));
 }
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 }
 
-function calculateRevenue(orders) {
-  return orders.reduce(
+
+// ----------------------------------------
+// Calculations
+// ----------------------------------------
+
+function calculateRevenue(orderList) {
+  return orderList.reduce(
     (total, order) =>
       total + Number(order.total),
     0
   );
 }
+
+
+// ----------------------------------------
+// Render Stats
+// ----------------------------------------
 
 function renderStats() {
   const totalProducts =
@@ -89,7 +101,6 @@ function renderStats() {
       (order) =>
         order.status === "pending"
     ).length;
-
 
   if (productCountElement) {
     productCountElement.textContent =
@@ -112,6 +123,10 @@ function renderStats() {
   }
 }
 
+
+// ----------------------------------------
+// Render Recent Orders
+// ----------------------------------------
 
 function renderRecentOrders() {
   if (!recentOrdersContainer) {
@@ -141,24 +156,33 @@ function renderRecentOrders() {
     recentOrders
       .map(
         (order) => `
-          <article class="dashboard-order">
-
-            <span class="dashboard-order__id">
+          <article
+            class="dashboard-order"
+          >
+            <span
+              class="dashboard-order__id"
+            >
               ${escapeHtml(order.id)}
             </span>
 
-            <span class="dashboard-order__customer">
+            <span
+              class="dashboard-order__customer"
+            >
               ${escapeHtml(
                 order.customer?.name ??
                 "Unknown customer"
               )}
             </span>
 
-            <span class="dashboard-order__date">
+            <span
+              class="dashboard-order__date"
+            >
               ${formatDate(order.date)}
             </span>
 
-            <span class="dashboard-order__total">
+            <span
+              class="dashboard-order__total"
+            >
               ${formatPrice(order.total)}
             </span>
 
@@ -170,25 +194,50 @@ function renderRecentOrders() {
                 )}
               "
             >
-              ${escapeHtml(order.status)}
+              ${escapeHtml(
+                order.status
+              )}
             </span>
-
           </article>
         `
       )
       .join("");
 }
 
-/* ------------------------------
-   Initial Dashboard
------------------------------- */
 
-renderStats();
-renderRecentOrders();
+// ----------------------------------------
+// Load Dashboard Data
+// ----------------------------------------
 
+async function initializeDashboard() {
+  try {
+    const [
+      loadedProducts,
+      loadedOrders,
+    ] = await Promise.all([
+      getAllProducts(),
+      getAllOrders(),
+    ]);
 
-/* Initial Dashboard */
+    products = loadedProducts;
+    orders = loadedOrders;
 
-renderStats();
+    renderStats();
+    renderRecentOrders();
+  } catch (error) {
+    console.error(
+      "Dashboard load error:",
+      error
+    );
 
-renderRecentOrders();
+    if (recentOrdersContainer) {
+      recentOrdersContainer.innerHTML = `
+        <p class="dashboard__empty">
+          Unable to load dashboard data.
+        </p>
+      `;
+    }
+  }
+}
+
+initializeDashboard();

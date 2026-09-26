@@ -4,7 +4,6 @@ import {
   getAllProducts,
 } from "../api/products-http.js";
 
-// import { createOrder } from "../api/orders-api.js";
 import { createOrder } from "../api/orders-http.js";
 
 import {
