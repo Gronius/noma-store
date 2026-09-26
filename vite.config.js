@@ -1,12 +1,18 @@
 import { defineConfig } from "vite";
-import { mockApiPlugin } from "./vite.mock-api.js";
 
 export default defineConfig({
   css: {
     devSourcemap: true,
   },
 
-  plugins: [
-    mockApiPlugin(),
-  ],
+  server: {
+    proxy: {
+      "/api": {
+        target:
+          "http://localhost:3000",
+
+        changeOrigin: true,
+      },
+    },
+  },
 });

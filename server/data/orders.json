@@ -1,0 +1,33 @@
+[
+  {
+    "id": "NOMA-1790447688100",
+    "date": "2026-09-26T18:34:48.100Z",
+    "customer": {
+      "name": "Brain",
+      "email": "brain@ua.i",
+      "phone": "+980782968729",
+      "address": "Narorda 51",
+      "city": "London",
+      "postalCode": "01345",
+      "paymentMethod": "card"
+    },
+    "items": [
+      {
+        "productId": 5,
+        "title": "Soft Floor Lamp",
+        "price": 219,
+        "quantity": 1
+      },
+      {
+        "productId": 2,
+        "title": "Lounge Chair",
+        "price": 349,
+        "quantity": 1
+      }
+    ],
+    "subtotal": 568,
+    "shipping": 0,
+    "total": 568,
+    "status": "processing"
+  }
+]

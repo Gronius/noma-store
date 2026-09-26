@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "title": "Ceramic Table Lamp",
+    "category": "Lighting",
+    "price": 89,
+    "image": "images/products/ceramic-table-lamp.webp",
+    "alt": "Ceramic table lamp",
+    "description": "A warm ceramic table lamp designed to bring soft and comfortable light into everyday spaces.",
+    "badge": "New",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "Lounge Chair",
+    "category": "Furniture",
+    "price": 349,
+    "image": "images/products/lounge-chair.webp",
+    "alt": "Minimal lounge chair",
+    "description": "A comfortable lounge chair with a calm silhouette, designed for slow and everyday living.",
+    "badge": null,
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Wall Mirror",
+    "category": "Decor",
+    "price": 129,
+    "image": "images/products/wall-mirror.webp",
+    "alt": "Minimal wall mirror",
+    "description": "A minimal wall mirror that adds depth, light and a quiet decorative accent to your space.",
+    "badge": null,
+    "featured": true
+  },
+  {
+    "id": 4,
+    "title": "Sculptural Vase",
+    "category": "Decor",
+    "price": 59,
+    "image": "images/products/sculptural-vase.webp",
+    "alt": "Minimal sculptural ceramic vase",
+    "description": "A sculptural ceramic vase created to stand beautifully on its own or hold your favorite flowers.",
+    "badge": null,
+    "featured": true
+  },
+  {
+    "id": 5,
+    "title": "Soft Floor Lamp",
+    "category": "Lighting",
+    "price": 219,
+    "image": "images/products/soft-floor-lamp.webp",
+    "alt": "Minimal floor lamp",
+    "description": "A floor lamp with a soft profile and warm ambient light for calm evening interiors.",
+    "badge": "New",
+    "featured": false
+  },
+  {
+    "id": 6,
+    "title": "Oak Side Table",
+    "category": "Furniture",
+    "price": 179,
+    "image": "images/products/oak-side-table.webp",
+    "alt": "Minimal oak side table",
+    "description": "A compact oak side table with a simple and timeless form for everyday use.",
+    "badge": null,
+    "featured": false
+  },
+  {
+    "id": 7,
+    "badge": "",
+    "alt": "Node backend test",
+    "title": "Node Backend Test",
+    "category": "Decor",
+    "featured": false,
+    "price": 55,
+    "description": "Created in Node backend",
+    "image": "/images/products/sculptural-vase.webp"
+  }
+]
