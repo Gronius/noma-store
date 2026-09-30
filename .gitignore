@@ -23,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 *.md
+
+# SQLite runtime database
+server/data/*.sqlite
+server/data/*.sqlite-*
+
+# Local backup files
+server/data/*.bak
