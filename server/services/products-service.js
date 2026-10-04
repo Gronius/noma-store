@@ -3,9 +3,16 @@ import {
   saveProducts,
 } from "../storage.js";
 
+import {
+  validateProductCreate,
+  validateProductUpdate,
+} from "../validators/product-validator.js";
+
+
 export async function getAllProducts() {
-  return getProducts();
+  return await getProducts();
 }
+
 
 export async function getProductById(
   productId
@@ -13,15 +20,26 @@ export async function getProductById(
   const products =
     await getProducts();
 
-  return products.find(
-    (product) =>
-      product.id === productId
-  ) ?? null;
+  const id =
+    Number(productId);
+
+  return (
+    products.find(
+      (product) =>
+        product.id === id
+    ) || null
+  );
 }
+
 
 export async function createProduct(
   productData
 ) {
+  const validatedProduct =
+    validateProductCreate(
+      productData
+    );
+
   const products =
     await getProducts();
 
@@ -37,70 +55,89 @@ export async function createProduct(
 
   const product = {
     id: nextId,
-    ...productData,
+    ...validatedProduct,
   };
 
   products.push(product);
 
-  await saveProducts(products);
+  await saveProducts(
+    products
+  );
 
   return product;
 }
+
 
 export async function updateProduct(
   productId,
   productData
 ) {
+  const id =
+    Number(productId);
+
   const products =
     await getProducts();
 
-  const productIndex =
+  const index =
     products.findIndex(
       (product) =>
-        product.id === productId
+        product.id === id
     );
 
-  if (productIndex === -1) {
+  if (index === -1) {
     return null;
   }
 
+  const validatedProduct =
+    validateProductUpdate(
+      productData
+    );
+
   const updatedProduct = {
-    ...products[productIndex],
-    ...productData,
-    id: products[productIndex].id,
+    ...products[index],
+    ...validatedProduct,
+    id: products[index].id,
   };
 
-  products[productIndex] =
+  products[index] =
     updatedProduct;
 
-  await saveProducts(products);
+  await saveProducts(
+    products
+  );
 
   return updatedProduct;
 }
 
+
 export async function deleteProduct(
   productId
 ) {
+  const id =
+    Number(productId);
+
   const products =
     await getProducts();
 
-  const productIndex =
-    products.findIndex(
-      (product) =>
-        product.id === productId
+  const product =
+    products.find(
+      (item) =>
+        item.id === id
     );
 
-  if (productIndex === -1) {
+  if (!product) {
     return null;
   }
 
-  const deletedProduct =
-    products.splice(
-      productIndex,
-      1
-    )[0];
+  const filteredProducts =
+    products.filter(
+      (item) =>
+        item.id !== id
+    );
 
-  await saveProducts(products);
+  await saveProducts(
+    filteredProducts
+  );
 
-  return deletedProduct;
+  return product;
 }

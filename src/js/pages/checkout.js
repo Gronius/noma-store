@@ -304,6 +304,7 @@ function showSuccess(order) {
   }
 }
 
+
 async function handleSubmit(event) {
   event.preventDefault();
 
@@ -362,15 +363,17 @@ async function handleSubmit(event) {
 
     items: cart.map(
       (item) => ({
-        productId: item.id,
+        id: Number(item.id),
         title: item.title,
-        price: item.price,
-        quantity: item.quantity,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
       })
     ),
 
     subtotal: getCartTotal(),
+
     shipping: 0,
+
     total: getCartTotal(),
   });
 
@@ -380,6 +383,8 @@ async function handleSubmit(event) {
 
   showSuccess(order);
 }
+
+
 
 /* ------------------------------
    Initialization

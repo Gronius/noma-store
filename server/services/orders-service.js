@@ -1,11 +1,17 @@
 import {
+  HttpError,
+} from "../utils/http.js";
+
+import {
+  getProducts,
   getOrders,
   saveOrders,
 } from "../storage.js";
 
 import {
-  HttpError,
-} from "../utils/http.js";
+  validateOrderCreate,
+} from "../validators/order-validator.js";
+
 
 export const ORDER_STATUSES = [
   "pending",
@@ -14,9 +20,11 @@ export const ORDER_STATUSES = [
   "cancelled",
 ];
 
+
 export async function getAllOrders() {
-  return getOrders();
+  return await getOrders();
 }
+
 
 export async function getOrderById(
   orderId
@@ -24,50 +32,148 @@ export async function getOrderById(
   const orders =
     await getOrders();
 
-  return orders.find(
-    (order) =>
-      order.id === orderId
-  ) ?? null;
+  return (
+    orders.find(
+      (order) =>
+        order.id === orderId
+    ) || null
+  );
 }
+
+//HELPER
+
+function validateOrderItemsAgainstProducts(
+  items,
+  products
+) {
+  const errors = {};
+  const normalizedItems = [];
+
+  items.forEach(
+    (item, index) => {
+      const product =
+        products.find(
+          (currentProduct) =>
+            Number(currentProduct.id) ===
+            Number(item.id)
+        );
+
+      if (!product) {
+        errors[`items.${index}.id`] =
+          "Product does not exist.";
+
+        return;
+      }
+
+      const clientPriceCents =
+        Math.round(
+          Number(item.price) * 100
+        );
+
+      const actualPriceCents =
+        Math.round(
+          Number(product.price) * 100
+        );
+
+      if (
+        clientPriceCents !==
+        actualPriceCents
+      ) {
+        errors[`items.${index}.price`] =
+          "Price does not match the current product price.";
+
+        return;
+      }
+
+      normalizedItems.push({
+        id:
+          Number(product.id),
+
+        title:
+          product.title,
+
+        price:
+          Number(product.price),
+
+        quantity:
+          Number(item.quantity),
+
+        image:
+          product.image ?? null,
+      });
+    }
+  );
+
+  return {
+    errors,
+    normalizedItems,
+  };
+}
+
 
 export async function createOrder(
   orderData
 ) {
+  const validatedOrder =
+    validateOrderCreate(
+      orderData
+    );
+
+  const products =
+    await getProducts();
+
+  const {
+  errors,
+  normalizedItems,
+} =
+  validateOrderItemsAgainstProducts(
+    validatedOrder.items,
+    products
+  );
+
+if (
+  Object.keys(errors).length > 0
+) {
+  throw new HttpError(
+    400,
+    "Order validation failed.",
+    errors
+  );
+}
+
   const orders =
     await getOrders();
 
   const order = {
-    id: `NOMA-${Date.now()}`,
+    id:
+      `NOMA-${Date.now()}`,
+
     date:
       new Date().toISOString(),
-    ...orderData,
-    status: "pending",
+
+    ...validatedOrder,
+
+       items:
+      normalizedItems,
+
+    status:
+      "pending",
   };
 
   orders.push(order);
 
-  await saveOrders(orders);
+  await saveOrders(
+    orders
+  );
 
   return order;
 }
+
 
 export async function updateOrderStatus(
   orderId,
   status
 ) {
-  const orders =
-    await getOrders();
-
-  const orderIndex =
-    orders.findIndex(
-      (order) =>
-        order.id === orderId
-    );
-
-  if (orderIndex === -1) {
-    return null;
-  }
-
   if (
     !ORDER_STATUSES.includes(
       status
@@ -75,22 +181,39 @@ export async function updateOrderStatus(
   ) {
     throw new HttpError(
       400,
-      "Invalid order status"
+      "Invalid order status.",
+      {
+        status:
+          `status must be one of: ${ORDER_STATUSES.join(", ")}.`,
+      }
     );
   }
 
-  const updatedOrder = {
-    ...orders[orderIndex],
-    status,
-  };
 
-  orders[orderIndex] =
-    updatedOrder;
+  const orders =
+    await getOrders();
 
-  await saveOrders(orders);
+  const order =
+    orders.find(
+      (item) =>
+        item.id === orderId
+    );
 
-  return updatedOrder;
+  if (!order) {
+    return null;
+  }
+
+
+  order.status =
+    status;
+
+  await saveOrders(
+    orders
+  );
+
+  return order;
 }
+
 
 export async function deleteOrder(
   orderId
@@ -98,23 +221,26 @@ export async function deleteOrder(
   const orders =
     await getOrders();
 
-  const orderIndex =
-    orders.findIndex(
-      (order) =>
-        order.id === orderId
+  const order =
+    orders.find(
+      (item) =>
+        item.id === orderId
     );
 
-  if (orderIndex === -1) {
+  if (!order) {
     return null;
   }
 
-  const deletedOrder =
-    orders.splice(
-      orderIndex,
-      1
-    )[0];
 
-  await saveOrders(orders);
+  const filteredOrders =
+    orders.filter(
+      (item) =>
+        item.id !== orderId
+    );
 
-  return deletedOrder;
+  await saveOrders(
+    filteredOrders
+  );
+
+  return order;
 }

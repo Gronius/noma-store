@@ -1,10 +1,9 @@
 import "../styles/main.scss";
 
-import { products as initialProducts } from "../data/products.js";
 
 import {
   getAllProducts,
-} from "./modules/products.js";
+} from "./api/products-http.js";
 
 import { initHeader } from "./components/header.js";
 import { initProductModal } from "./components/product-modal.js";
@@ -14,26 +13,42 @@ import { initFavorites } from "./components/favorites.js";
 
 console.log("NOMA Store is running");
 
-const products =
-  getAllProducts(initialProducts);//added
+async function initStorefront() {
+  try {
+    const products =
+      await getAllProducts();
 
-initHeader();
+    initHeader();
 
-const featuredProductsContainer =
-document.querySelector("#featured-products");
+    const featuredProductsContainer =
+      document.querySelector(
+        "#featured-products"
+      );
 
-if (featuredProductsContainer) {
-const featuredProducts = products.filter(
-(product) => product.featured
-);
+    if (featuredProductsContainer) {
+      const featuredProducts =
+        products.filter(
+          (product) => product.featured
+        );
 
+      featuredProductsContainer.innerHTML =
+        featuredProducts
+          .map(createProductCard)
+          .join("");
+    }
 
+    initProductModal(products);
 
-featuredProductsContainer.innerHTML = featuredProducts
-.map(createProductCard)
-  .join("");
+    initCart(products);
+
+    initFavorites(products);
+
+  } catch (error) {
+    console.error(
+      "Failed to initialize NOMA Store:",
+      error
+    );
+  }
 }
 
-initProductModal(products);
-initCart(products);
-initFavorites(products);
+initStorefront();

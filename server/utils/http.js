@@ -1,32 +1,50 @@
 export class HttpError extends Error {
-  constructor(statusCode, message) {
+  constructor(
+    statusCode,
+    message,
+    details = null
+  ) {
     super(message);
 
     this.name = "HttpError";
     this.statusCode = statusCode;
+    this.details = details;
   }
 }
+
 
 export async function readJsonBody(req) {
-  let body = "";
+  return new Promise((resolve, reject) => {
+    let body = "";
 
-  for await (const chunk of req) {
-    body += chunk;
-  }
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
 
-  if (!body) {
-    return {};
-  }
+    req.on("end", () => {
+      if (!body.trim()) {
+        resolve({});
+        return;
+      }
 
-  try {
-    return JSON.parse(body);
-  } catch {
-    throw new HttpError(
-      400,
-      "Invalid JSON body"
-    );
-  }
+      try {
+        resolve(
+          JSON.parse(body)
+        );
+      } catch {
+        reject(
+          new HttpError(
+            400,
+            "Invalid JSON request body."
+          )
+        );
+      }
+    });
+
+    req.on("error", reject);
+  });
 }
+
 
 export function sendJson(
   res,
@@ -37,7 +55,7 @@ export function sendJson(
 
   res.setHeader(
     "Content-Type",
-    "application/json"
+    "application/json; charset=utf-8"
   );
 
   res.setHeader(

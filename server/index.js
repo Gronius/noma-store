@@ -30,10 +30,7 @@ import {
 
 const PORT = 3000;
 
-
-// ----------------------------------------
 // Server
-// ----------------------------------------
 
 const server =
   createServer(
@@ -63,16 +60,12 @@ const server =
         const pathname =
           url.pathname;
 
-
-        // ----------------------------------------
-        // PRODUCTS
-        // ----------------------------------------
-
+              // PRODUCTS
+ 
         const productMatch =
           pathname.match(
             /^\/api\/products\/(\d+)$/
           );
-
 
         // GET /api/products
 
@@ -92,7 +85,6 @@ const server =
 
           return;
         }
-
 
         // GET /api/products/:id
 
@@ -132,7 +124,6 @@ const server =
           return;
         }
 
-
         // POST /api/products
 
         if (
@@ -158,7 +149,6 @@ const server =
 
           return;
         }
-
 
         // PATCH /api/products/:id
 
@@ -204,7 +194,6 @@ const server =
           return;
         }
 
-
         // DELETE /api/products/:id
 
         if (
@@ -247,7 +236,6 @@ const server =
           return;
         }
 
-
         // ----------------------------------------
         // ORDERS
         // ----------------------------------------
@@ -256,7 +244,6 @@ const server =
           pathname.match(
             /^\/api\/orders\/([^/]+)$/
           );
-
 
         // GET /api/orders
 
@@ -276,7 +263,6 @@ const server =
 
           return;
         }
-
 
         // GET /api/orders/:id
 
@@ -316,7 +302,6 @@ const server =
           return;
         }
 
-
         // POST /api/orders
 
         if (
@@ -342,7 +327,6 @@ const server =
 
           return;
         }
-
 
         // PATCH /api/orders/:id
 
@@ -388,7 +372,6 @@ const server =
           return;
         }
 
-
         // DELETE /api/orders/:id
 
         if (
@@ -431,7 +414,6 @@ const server =
           return;
         }
 
-
         // ----------------------------------------
         // Unknown route
         // ----------------------------------------
@@ -445,27 +427,27 @@ const server =
           }
         );
       } catch (error) {
-        console.error(
-          "API error:",
-          error
-        );
+        console.error(error);
 
         sendJson(
           res,
           error.statusCode || 500,
           {
-            error:
+          error:
               error.message ||
-              "Internal server error",
+              "Internal server error.",
+
+            ...(error.details && {
+              details:
+                error.details,
+            }),
           }
         );
       }
     }
   );
 
-
 await ensureStorage();
-
 
 server.listen(
   PORT,
