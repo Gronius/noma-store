@@ -1,10 +1,10 @@
 import "../../styles/main.scss";
 
 import {
-  getAllProducts,
-} from "../api/products-http.js";
+  getProducts,
+} from "../services/products.js";
 
-import { createOrder } from "../api/orders-http.js";
+import { createOrder } from "../services/orders.js";
 
 import {
   getCartFromStorage,
@@ -304,7 +304,6 @@ function showSuccess(order) {
   }
 }
 
-
 async function handleSubmit(event) {
   event.preventDefault();
 
@@ -384,33 +383,21 @@ async function handleSubmit(event) {
   showSuccess(order);
 }
 
-
-
-/* ------------------------------
-   Initialization
------------------------------- */
+/*    Initialization */
 
 async function initializeCheckoutPage() {
   initHeader();
 
   try {
-    /*
-     * Products теперь приходят через HTTP.
-     */
+    /* Products теперь приходят через HTTP.*/
     products =
-      await getAllProducts();
+      await getProducts();
 
-    /*
-     * Cart остаётся client-side
-     * и читается из localStorage.
-     */
+    /* Cart остаётся client-side и читается из localStorage. */
     const storedCart =
       getCartFromStorage();
 
-    /*
-     * Объединяем HTTP products
-     * с локальными cart items.
-     */
+    /* Объединяем HTTP products с локальными cart items*/
     cart = storedCart
       .map((item) => {
         const product =
@@ -430,16 +417,10 @@ async function initializeCheckoutPage() {
       })
       .filter(Boolean);
 
-    /*
-     * Убираем из localStorage товары,
-     * которых больше нет в API.
-     */
+    /* Убираем из localStorage товары, которых больше нет в API.*/
     saveCartToStorage(cart);
 
-    /*
-     * Cart получает актуальный список
-     * products из HTTP.
-     */
+    /* Cart получает актуальный список products из HTTP.*/
     initCart(products);
 
     renderOrderSummary();

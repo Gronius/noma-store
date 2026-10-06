@@ -1,11 +1,12 @@
 import "../../styles/main.scss";
 
 import {
-  getAllProducts,
-  getProductById,
-} from "../api/products-http.js";
+  getProducts,
+  getProduct,
+} from "../services/products.js";
 
 import { initHeader } from "../components/header.js";
+
 import { initCart } from "../components/cart.js";
 
 const productPage =
@@ -89,19 +90,20 @@ function renderProduct(product) {
         </div>
 
       </div>
+
     </div>
   `;
 }
 
-/* ------------------------------
-   Header
------------------------------- */
+// ------------------------------
+// Header
+// ------------------------------
 
 initHeader();
 
-/* ------------------------------
-   Product
------------------------------- */
+// ------------------------------
+// Product
+// ------------------------------
 
 async function initializeProductPage() {
   const productId =
@@ -110,13 +112,13 @@ async function initializeProductPage() {
   try {
     const [products, product] =
       await Promise.all([
-        getAllProducts(),
-        getProductById(productId),
+        getProducts(),
+        getProduct(productId),
       ]);
 
     renderProduct(product);
-
     initCart(products);
+
   } catch (error) {
     console.error(
       "Product page load error:",

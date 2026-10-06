@@ -1,19 +1,29 @@
 import "../../styles/main.scss";
 
-import { getAllProducts } from "../api/products-http.js";
+import { getProducts } from "../services/products.js";
 
-import { initHeader } from "../components/header.js";
+import {
+  initHeader,
+} from "../components/header.js";
 
-import { initProductModal,} from "../components/product-modal.js";
+import {
+  initProductModal,
+} from "../components/product-modal.js";
 
-import {createProductCard, } from "../components/product-card.js";
+import {
+  createProductCard,
+} from "../components/product-card.js";
 
-import { initCart } from "../components/cart.js";
+import {
+  initCart,
+} from "../components/cart.js";
 
-import { initFavorites,} from "../components/favorites.js";
+import {
+  initFavorites,
+} from "../components/favorites.js";
 
-// const products = getAllProducts(initialProducts);
 let products = [];
+
 let currentProducts = products;
 
 //------- CARDS+MORE start
@@ -36,7 +46,8 @@ const loadMoreButton = document.querySelector(
 
 const PRODUCTS_PER_LOAD = 6;
 
-let visibleProductsCount = PRODUCTS_PER_LOAD;
+let visibleProductsCount =
+  PRODUCTS_PER_LOAD;
 
 function renderProducts() {
   if (!productsGrid) {
@@ -49,9 +60,10 @@ function renderProducts() {
       visibleProductsCount
     );
 
-  productsGrid.innerHTML = visibleProducts
-    .map(createProductCard)
-    .join("");
+  productsGrid.innerHTML =
+    visibleProducts
+      .map(createProductCard)
+      .join("");
 
   updateProductsMeta();
 }
@@ -69,9 +81,11 @@ function updateProductsMeta() {
 
   if (loadMoreButton) {
     loadMoreButton.hidden =
-      visibleProductsCount >= currentProducts.length;
+      visibleProductsCount >=
+      currentProducts.length;
   }
 }
+
 //------- CARDS+MORE end
 
 function setActiveFilter(
@@ -103,10 +117,11 @@ function filterProducts(
   );
 }
 
-/* Header */
+// Header
+
 initHeader();
 
-/* Category Filters */
+// Category Filters
 
 filterButtons.forEach(
   (button) => {
@@ -133,6 +148,7 @@ filterButtons.forEach(
 );
 
 //-------- ADDED BUTTOM MORE
+
 loadMoreButton?.addEventListener(
   "click",
   () => {
@@ -143,11 +159,11 @@ loadMoreButton?.addEventListener(
   }
 );
 
-/* Initial Products */
+// Initial Products
 
 async function initializeProductsPage() {
   try {
-    products = await getAllProducts();
+    products = await getProducts();
 
     currentProducts = products;
 
@@ -156,8 +172,12 @@ async function initializeProductsPage() {
     initProductModal(products);
     initCart(products);
     initFavorites(products);
+
   } catch (error) {
-    console.error("Products load error:", error);
+    console.error(
+      "Products load error:",
+      error
+    );
 
     if (productsGrid) {
       productsGrid.innerHTML = `

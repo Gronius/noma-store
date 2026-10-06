@@ -1,11 +1,11 @@
 import "../../styles/main.scss";
 
 import {
-  getAllProducts,
+  getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../api/products-http.js";
+} from "../services/products.js";
 
 const productsTable = document.querySelector(
   "[data-products-table]"
@@ -99,7 +99,7 @@ function formatPrice(price) {
 
 async function loadProducts() {
   try {
-    products = await getAllProducts();
+    products = await getProducts();
     return products;
   } catch (error) {
     console.error(

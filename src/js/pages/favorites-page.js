@@ -1,8 +1,8 @@
 import "../../styles/main.scss";
 
 import {
-  getAllProducts,
-} from "../api/products-http.js";
+  getProducts,
+} from "../services/products.js";
 
 import {
   getFavoritesFromStorage,
@@ -73,26 +73,27 @@ function renderFavorites(products) {
       .join("");
 }
 
-/* ------------------------------
-   Header
------------------------------- */
+// ------------------------------
+// Header
+// ------------------------------
 
 initHeader();
 
-/* ------------------------------
-   Favorites Page
------------------------------- */
+// ------------------------------
+// Favorites Page
+// ------------------------------
 
 async function initializeFavoritesPage() {
   try {
     const products =
-      await getAllProducts();
+      await getProducts();
 
     renderFavorites(products);
 
     initFavorites(products);
     initProductModal(products);
     initCart(products);
+
   } catch (error) {
     console.error(
       "Favorites page load error:",
@@ -109,6 +110,4 @@ async function initializeFavoritesPage() {
   }
 }
 
-initializeFavoritesPage();/* Initial render */
-
-renderFavorites();
+initializeFavoritesPage();

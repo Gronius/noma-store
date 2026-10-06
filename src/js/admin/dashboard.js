@@ -1,12 +1,13 @@
 import "../../styles/main.scss";
 
 import {
-  getAllProducts,
-} from "../api/products-http.js";
+  getProducts,
+} from "../services/products.js";
 
 import {
-  getAllOrders,
-} from "../api/orders-http.js";
+  getOrders,
+} from "../services/orders.js";
+
 
 const productCountElement =
   document.querySelector(
@@ -33,17 +34,19 @@ const recentOrdersContainer =
     "[data-recent-orders]"
   );
 
+
 let products = [];
 let orders = [];
 
 
-// ----------------------------------------
-// Helpers
-// ----------------------------------------
+/* ----------------------------------------
+   Helpers
+---------------------------------------- */
 
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
+
 
 function formatDate(date) {
   return new Intl.DateTimeFormat(
@@ -55,6 +58,7 @@ function formatDate(date) {
     }
   ).format(new Date(date));
 }
+
 
 function escapeHtml(value) {
   return String(value)
@@ -69,9 +73,9 @@ function escapeHtml(value) {
 }
 
 
-// ----------------------------------------
-// Calculations
-// ----------------------------------------
+/* ----------------------------------------
+   Calculations
+---------------------------------------- */
 
 function calculateRevenue(orderList) {
   return orderList.reduce(
@@ -82,9 +86,9 @@ function calculateRevenue(orderList) {
 }
 
 
-// ----------------------------------------
-// Render Stats
-// ----------------------------------------
+/* ----------------------------------------
+   Render Stats
+---------------------------------------- */
 
 function renderStats() {
   const totalProducts =
@@ -101,6 +105,7 @@ function renderStats() {
       (order) =>
         order.status === "pending"
     ).length;
+
 
   if (productCountElement) {
     productCountElement.textContent =
@@ -124,14 +129,15 @@ function renderStats() {
 }
 
 
-// ----------------------------------------
-// Render Recent Orders
-// ----------------------------------------
+/* ----------------------------------------
+   Render Recent Orders
+---------------------------------------- */
 
 function renderRecentOrders() {
   if (!recentOrdersContainer) {
     return;
   }
+
 
   if (orders.length === 0) {
     recentOrdersContainer.innerHTML = `
@@ -143,6 +149,7 @@ function renderRecentOrders() {
     return;
   }
 
+
   const recentOrders =
     [...orders]
       .sort(
@@ -152,6 +159,7 @@ function renderRecentOrders() {
       )
       .slice(0, 5);
 
+
   recentOrdersContainer.innerHTML =
     recentOrders
       .map(
@@ -159,6 +167,7 @@ function renderRecentOrders() {
           <article
             class="dashboard-order"
           >
+
             <span
               class="dashboard-order__id"
             >
@@ -198,6 +207,7 @@ function renderRecentOrders() {
                 order.status
               )}
             </span>
+
           </article>
         `
       )
@@ -205,9 +215,9 @@ function renderRecentOrders() {
 }
 
 
-// ----------------------------------------
-// Load Dashboard Data
-// ----------------------------------------
+/* ----------------------------------------
+   Load Dashboard Data
+---------------------------------------- */
 
 async function initializeDashboard() {
   try {
@@ -215,15 +225,22 @@ async function initializeDashboard() {
       loadedProducts,
       loadedOrders,
     ] = await Promise.all([
-      getAllProducts(),
-      getAllOrders(),
+      getProducts(),
+      getOrders(),
     ]);
 
-    products = loadedProducts;
-    orders = loadedOrders;
+
+    products =
+      loadedProducts;
+
+    orders =
+      loadedOrders;
+
 
     renderStats();
+
     renderRecentOrders();
+
   } catch (error) {
     console.error(
       "Dashboard load error:",
@@ -239,5 +256,6 @@ async function initializeDashboard() {
     }
   }
 }
+
 
 initializeDashboard();

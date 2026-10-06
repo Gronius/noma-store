@@ -1,11 +1,11 @@
 import "../../styles/main.scss";
 
 import {
-  getAllOrders,
+  getOrders,
   updateOrderStatus,
   deleteOrder,
   ORDER_STATUSES,
-} from "../api/orders-http.js";
+} from "../services/orders.js";
 
 const ordersTable =
   document.querySelector(
@@ -76,12 +76,9 @@ let orders = [];
 
 let searchQuery = "";
 let selectedStatus = "all";
-
-
 // ----------------------------------------
 // Helpers
 // ----------------------------------------
-
 function formatPrice(price) {
   return `€${Number(price).toFixed(2)}`;
 }
@@ -142,16 +139,13 @@ function renderStatusOptions(
     )
     .join("");
 }
-
-
 // ----------------------------------------
 // Load Orders
 // ----------------------------------------
-
 async function loadOrders() {
   try {
     orders =
-      await getAllOrders();
+      await getOrders();
 
     return orders;
   } catch (error) {
@@ -165,12 +159,9 @@ async function loadOrders() {
     return orders;
   }
 }
-
-
 // ----------------------------------------
 // Filter Orders
 // ----------------------------------------
-
 function filterOrders(ordersList) {
   const query =
     searchQuery
@@ -200,12 +191,9 @@ function filterOrders(ordersList) {
     }
   );
 }
-
-
 // ----------------------------------------
 // Orders Summary
 // ----------------------------------------
-
 function renderOrdersSummary() {
   const counts = {
     pending: 0,
@@ -250,12 +238,9 @@ function renderOrdersSummary() {
       counts.cancelled;
   }
 }
-
-
 // ----------------------------------------
 // Render Orders
 // ----------------------------------------
-
 function renderOrders() {
   renderOrdersSummary();
 
@@ -431,12 +416,9 @@ function renderOrders() {
       )
       .join("");
 }
-
-
 // ----------------------------------------
 // Search
 // ----------------------------------------
-
 ordersSearchInput?.addEventListener(
   "input",
   () => {
@@ -446,12 +428,9 @@ ordersSearchInput?.addEventListener(
     renderOrders();
   }
 );
-
-
 // ----------------------------------------
 // Status Filter
 // ----------------------------------------
-
 ordersStatusFilter?.addEventListener(
   "change",
   () => {
@@ -461,12 +440,9 @@ ordersStatusFilter?.addEventListener(
     renderOrders();
   }
 );
-
-
 // ----------------------------------------
 // Open Order Modal
 // ----------------------------------------
-
 function openOrderModal(orderId) {
   const order =
     orders.find(
@@ -693,12 +669,9 @@ function openOrderModal(orderId) {
     "is-open"
   );
 }
-
-
 // ----------------------------------------
 // Close Order Modal
 // ----------------------------------------
-
 function closeOrderModal() {
   orderModal?.classList.remove(
     "is-open"
@@ -709,12 +682,9 @@ function closeOrderModal() {
     "true"
   );
 }
-
-
 // ----------------------------------------
 // Delete Order
 // ----------------------------------------
-
 async function handleDeleteOrder(
   orderId
 ) {
@@ -752,12 +722,9 @@ async function handleDeleteOrder(
     );
   }
 }
-
-
 // ----------------------------------------
 // View / Delete Events
 // ----------------------------------------
-
 ordersTable?.addEventListener(
   "click",
   (event) => {
@@ -788,10 +755,7 @@ ordersTable?.addEventListener(
   }
 );
 
-
-// ----------------------------------------
 // Change Order Status
-// ----------------------------------------
 
 ordersTable?.addEventListener(
   "change",
@@ -838,10 +802,7 @@ ordersTable?.addEventListener(
   }
 );
 
-
-// ----------------------------------------
 // Close Modal
-// ----------------------------------------
 
 orderModalCloseButtons.forEach(
   (button) => {
@@ -852,10 +813,7 @@ orderModalCloseButtons.forEach(
   }
 );
 
-
-// ----------------------------------------
 // Escape
-// ----------------------------------------
 
 document.addEventListener(
   "keydown",
@@ -871,10 +829,7 @@ document.addEventListener(
   }
 );
 
-
-// ----------------------------------------
 // Initial Render
-// ----------------------------------------
 
 async function initializeOrdersPage() {
   await loadOrders();
