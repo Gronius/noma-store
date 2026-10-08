@@ -14,8 +14,8 @@ import {
 } from "node:url";
 
 import {
-  products as seedProducts,
-} from "../../src/data/products.js";
+  seedProducts,
+} from "./seed-products.js";
 
 
 const __filename =
